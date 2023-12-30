@@ -1,0 +1,269 @@
+# This Makefile requires the following commands to be available:
+# * virtualenv
+# * python3
+
+REQUIREMENTS_BASE:=requirements/requirements-base.txt
+REQUIREMENTS_TEST:=requirements/requirements-testing.txt
+REQUIREMENTS_TXT:=requirements.txt
+
+DOCKER_COMPOSE=$(shell which docker-compose)
+
+PIP:="venv/bin/pip3"
+TOX="venv/bin/tox"
+PYTHON="venv/bin/python"
+UWSGI="venv/bin/uwsgi"
+EPPGATE="venv/bin/epp-gate"
+TOX_PY_LIST="$(shell $(TOX) -l | grep ^py | xargs | sed -e 's/ /,/g')"
+TOX_LATEST_LIST="latest38"
+
+# Empty files used to keep track of installed types of virtualenvs (see rules below)
+VENV_SYSTEM_SITE_PACKAGES=venv/.venv_system_site_packages
+VENV_NO_SYSTEM_SITE_PACKAGES=venv/.venv_no_system_site_packages
+VENV_DEPLOY=venv/.venv_deploy
+VENV_BASE=venv/.venv_base
+VENV_TEST=venv/.venv_test
+VENV_TOX=venv/.venv_tox
+VENV_DEV=venv/.venv_dev
+
+VSN:=$(shell git describe --tags --always)
+ARTIFACT:=llm-performance-$(VSN).tgz
+PIP_CACHE:=.pip_cache
+PIP_DOWNLOAD:=.pip_download
+PYTHON_VERSION=python3
+BRANCH=$(shell git branch | grep '*' | awk '{print $$2}')
+BUILD_PROPERTIES_FILE=build.properties
+BUILD_PROPERTIES_JSONFILE=build.properties.json
+MAKE_MIGRATIONS=`$(shell echo $(PYTHON)) manage.py makemigrations;`
+MIGRATIONS_CHECK=`echo $(MAKE_MIGRATIONS_OUTPUT) | awk '{print match($$0, "No changes detected")}'`
+PARAMS=llm_performance/params.py
+
+.PHONY: clean docsclean pyclean test lint isort docs docker check_env \
+	check_forgotten_migrations artifact \
+	requirements_clean_virtualenv requirements_create_virtualenv requirements_build
+
+tox: $(VENV_TOX)
+	# tox
+	PYTHONPATH=. $(TOX)
+
+# Used by the deploy pipeline to prepare for deploy
+build: clean artifact
+
+pyclean:
+	# pyclean
+	@find . -name *.pyc -delete
+	@rm -rf *.egg-info build
+	@rm -rf coverage.xml .coverage
+	@rm -f llm-performance-*.tgz
+
+docsclean:
+	@rm -fr docs/_build/
+
+clean: pyclean docsclean
+	# clean
+	@rm -rf venv
+	@rm -rf .tox
+
+# Used by the deploy pipeline to get information about the artifact
+# created by the build step.
+properties:
+	@echo "{\"artifact\": \"$(ARTIFACT)\", \"version\": \"$(VSN)\"}"
+
+$(PARAMS): | llm_performance/params_example.py
+	# PARAMS
+	@cp $| $@
+
+venv: $(VENV_DEV) $(PARAMS)
+	# venv
+
+check_forgotten_migrations: $(PARAMS) $(VENV_BASE)
+	# check_forgotten_migrations
+	$(eval MAKE_MIGRATIONS_OUTPUT:="$(shell echo $(MAKE_MIGRATIONS))")
+	@echo $(MAKE_MIGRATIONS_OUTPUT)
+	@if [ $(MIGRATIONS_CHECK) -gt 0 ]; then \
+		echo "There aren't any forgotten migrations. Well done!"; \
+	else \
+		echo "Error! You've forgotten to add the migrations!"; \
+		exit 1; \
+	fi
+
+check_requirements_txt:
+	# check_requirements_txt
+	@if [ ! -f "$(REQUIREMENTS_TXT)" ]; then \
+		echo "ERROR: Missing $(REQUIREMENTS_TXT), it should be committed to the repository"; \
+		exit 1; \
+	fi
+	@touch $(REQUIREMENTS_TXT) # to make sure that REQUIREMENTS_TXT is the requirements file with the latest timestamp
+
+sanity_checks: check_requirements_txt check_forgotten_migrations
+	@echo "Checks OK"
+
+test: clean sanity_checks tox
+	# test
+
+test_latest: sanity_checks pyclean venv
+	# test_latest
+	$(TOX) -e $(TOX_LATEST_LIST) -- $*
+
+test_dev: sanity_checks pyclean venv
+	# test_dev
+	$(TOX) -e dev -- $*
+
+test/%:
+	./.tox/py38/bin/pytest -v $*
+
+test_e2e: $(VENV_TOX)
+	E2E=1 PYTHONPATH=. .tox/py38/bin/py.test -v -s --capture=no tests/
+
+lint: $(VENV_TOX)
+	@$(TOX) -e lint
+	@$(TOX) -e isort-check
+
+isort: $(VENV_TOX)
+	@$(TOX) -e isort-fix
+
+docker/test:
+	$(DOCKER_COMPOSE) build && trap '$(DOCKER_COMPOSE) down' EXIT && $(DOCKER_COMPOSE) --verbose up --exit-code-from test
+
+artifact: $(VENV_NO_SYSTEM_SITE_PACKAGES)
+	# artifact
+	@rm -rf .pip_download
+	@echo "$(BRANCH) $(VSN)" > REVISION
+	@tar -czf $(ARTIFACT) --exclude-from=.artifact_exclude * $(PIP_DOWNLOAD)
+	@echo "version = $(VSN)" > $(BUILD_PROPERTIES_FILE)
+	@echo "branch = $(BRANCH)" >> $(BUILD_PROPERTIES_FILE)
+	@echo "artifact = $(ARTIFACT)" >> $(BUILD_PROPERTIES_FILE)
+	@echo "{\"artifact\": \"$(ARTIFACT)\", \"version\": \"$(VSN)\", \"branch\": \"$(BRANCH)\"}" > $(BUILD_PROPERTIES_JSONFILE)
+	@echo 'Done!'
+
+check_env:
+ifndef ENV
+	$(error ENV is undefined)
+endif
+
+
+install: check_env $(VENV_DEPLOY)
+	@echo "ENV = '$(ENV)'" > $(PARAMS)
+	@$(PYTHON) manage.py compilemessages
+	@$(PYTHON) manage.py collectstatic --noinput
+	@echo 'Done!'
+
+
+runuwsgi: $(VENV_DEPLOY)
+	$(UWSGI) --ini etc/local.uwsgi.ini
+
+
+runserver: $(VENV_DEPLOY)
+	$(PYTHON) manage.py runserver
+
+
+createsuperuser: $(VENV_DEPLOY)
+	$(PYTHON) manage.py createsuperuser
+	@echo 'createsuperuser OK'
+
+
+collectstatic: $(VENV_DEPLOY)
+	$(PYTHON) manage.py collectstatic --noinput
+	@echo 'collectstatic OK'
+
+
+migrate: $(VENV_DEPLOY)
+	@$(PYTHON) manage.py migrate --noinput
+	@echo 'migrate OK'
+
+
+makemigrations: $(VENV_DEPLOY)
+	@$(PYTHON) manage.py makemigrations
+	@echo 'makemigrations OK'
+
+
+shell: $(VENV_DEPLOY)
+	@$(PYTHON) manage.py shell
+
+
+dbshell: $(VENV_DEPLOY)
+	@$(PYTHON) manage.py dbshell
+
+
+show_urls: $(VENV_DEPLOY)
+	@$(PYTHON) manage.py show_urls
+
+
+shell_plus: $(VENV_DEPLOY)
+	@$(PYTHON) manage.py shell_plus
+
+
+todo: $(VENV_DEPLOY)
+	@$(PYTHON) manage.py notes
+
+
+graph_models: $(VENV_DEPLOY)
+	@$(PIP) install --upgrade pygraphviz
+	@$(PYTHON) manage.py graph_models -a -g -o graph_models.png
+	@$(PIP) uninstall --yes pygraphviz
+	@echo 'File graph_models.png created.'
+
+
+run_background_worker_dev: $(VENV_DEPLOY)
+	@$(PYTHON) manage.py background_worker
+
+
+run_process_notifications_dev: $(VENV_DEPLOY)
+	@$(PYTHON) manage.py process_notifications
+
+
+################################################
+# Setting up of different kinds of virtualenvs #
+################################################
+
+$(REQUIREMENTS_TXT): $(VENV_NO_SYSTEM_SITE_PACKAGES)
+	# REQUIREMENTS_TXT
+	@$(PIP) install --upgrade pip wheel
+	@$(PIP) install -r $(REQUIREMENTS_BASE)
+	@rm -vf $(REQUIREMENTS_TXT)
+	@$(PIP) freeze > $(REQUIREMENTS_TXT)
+	@echo "Successfully Updated requirements.txt"
+
+# these two are the main venvs
+$(VENV_SYSTEM_SITE_PACKAGES):
+	# VENV_SYSTEM_SITE_PACKAGES
+	@rm -rf venv
+	@$(PYTHON_VERSION) -m venv --system-site-packages venv
+	@echo "[easy_install]" > venv/.pydistutils.cfg
+	@echo "find_links = file://$(PWD)/$(PIP_DOWNLOAD)/" >> venv/.pydistutils.cfg
+	@touch $@
+
+$(VENV_NO_SYSTEM_SITE_PACKAGES):
+	# VENV_NO_SYSTEM_SITE_PACKAGES
+	@rm -rf venv
+	@$(PYTHON_VERSION) -m venv venv
+	@touch $@
+
+# the rest is based on main venvs
+$(VENV_DEPLOY): $(VENV_NO_SYSTEM_SITE_PACKAGES) check_requirements_txt
+	# VENV_DEPLOY
+	@$(PIP) install -q --upgrade pip wheel
+	@$(PIP) install -q -r $(REQUIREMENTS_TXT)
+	@touch $@
+
+$(VENV_BASE): $(VENV_NO_SYSTEM_SITE_PACKAGES) check_requirements_txt
+	# VENV_BASE
+	@$(PIP) install --upgrade pip wheel
+	@$(PIP) install -r $(REQUIREMENTS_TXT)
+	@touch $@
+
+$(VENV_TEST): $(VENV_NO_SYSTEM_SITE_PACKAGES) $(REQUIREMENTS_TEST)
+	# VENV_TEST
+	@$(PIP) install --upgrade pip wheel
+	@$(PIP) install -r $(REQUIREMENTS_TEST)
+	@touch $@
+
+$(VENV_TOX): $(VENV_NO_SYSTEM_SITE_PACKAGES)
+	# VENV_TOX
+	@$(PIP) install --upgrade pip wheel
+	@$(PIP) install tox
+	@touch $@
+
+$(VENV_DEV): $(VENV_TOX) $(VENV_BASE) $(VENV_TEST)
+	# VENV_DEV
+	@$(PIP) install --upgrade pytest
+	@touch $@

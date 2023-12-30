@@ -1,0 +1,17 @@
+# tox
+isort
+flake8
+mock
+django-debug-toolbar
+
+# PyTest for running the tests.
+# importlib.metadata==2.0.0
+pytest
+pytest-mock
+pytest-cov
+pytest-django
+
+# docs
+sphinx
+# sphinxcontrib-plantuml
+sphinx_rtd_theme

@@ -1,0 +1,16 @@
+# vassal live config
+
+[uwsgi]
+logger = file:/home/user/llm-performance/logs/uwsgi.log
+chdir = /home/user/llm-performance/
+module = wsgi:application
+socket = 127.0.0.1:12321
+master = true
+base_dir = %D/..
+name = llm_performance
+processes = 1
+threads = 2
+chmod-socket = 664
+vacuum = true
+die-on-term = true
+# stats = 127.0.0.1:9191
