@@ -10,34 +10,57 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+#------------------------------------------------------------------------------
+
+import os
+import sys
+
+#------------------------------------------------------------------------------
+
+if os.environ.get('DOCKER_ENV'):
+    from llm_performance import params_docker as params  # @UnresolvedImport
+
+else:
+    from llm_performance import params  # @UnresolvedImport
+
+#------------------------------------------------------------------------------
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+SRC_PATH = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+REPO_ROOT = os.path.dirname(SRC_PATH)
+CONTENT_DIR = BASE_DIR
 
+#------------------------------------------------------------------------------
+#--- STANDALONE ?
+ENV = getattr(params, 'ENV')
+STANDALONE = True
+if ENV in ['production', 'docker', ]:  # pragma: no cover
+    STANDALONE = False
+
+#------------------------------------------------------------------------------
+
+DEBUG = getattr(params, 'DEBUG', False)
+DEBUGTOOLBAR_ENABLED = False
+METRICS_ENABLED = False
+
+#------------------------------------------------------------------------------
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-uq(49=cpcze1m96bk^n$mvu-tmea3#0vm_lj#6@%2p1&**lxi2'
+SECRET_KEY = getattr(params, 'SECRET_KEY', 'must be declared in params.py directly         !!!')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*', ]
 
 # Application definition
-
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,7 +77,7 @@ ROOT_URLCONF = 'llm_performance.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -63,23 +86,21 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'builtins': ['bootstrap4.templatetags.bootstrap4'],
         },
     },
 ]
 
 WSGI_APPLICATION = 'llm_performance.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -99,7 +120,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -108,16 +128,174 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+#------------------------------------------------------------------------------
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+SITE_ID = 1
+
+#------------------------------------------------------------------------------
+#--- Application definition
+INSTALLED_APPS = [
+    # nice django admin: https://django-grappelli.readthedocs.io/en/latest/
+    'grappelli',
+    'django.contrib.admin',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'rest_framework',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.staticfiles',
+    'django.contrib.sites',
+    # Database Backup
+    'dbbackup',
+    # improved admin: https://django-nested-admin.readthedocs.io/en/latest/quickstart.html
+    'nested_admin',
+    # html templates: https://django-bootstrap4.readthedocs.io/en/stable/quickstart.html
+    'bootstrap4',
+    # useful things: https://django-extensions.readthedocs.io/en/latest/command_extensions.html
+    'django_extensions',
+    'logs',
+    'accounts',
+    'llm_performance',
+]
+
+MIDDLEWARE = [
+    'logs.middleware.LogRequestsMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'admin_ip_restrictor.middleware.AdminIPRestrictorMiddleware',
+]
+
+#------------------------------------------------------------------------------
+#--- Sentry config
+SENTRY_ENABLED = getattr(params, 'SENTRY_ENABLED', False)
+if SENTRY_ENABLED:
+    SENTRY_DSN = getattr(params, 'SENTRY_DSN', '')
+    import sentry_sdk  # @UnresolvedImport
+    from sentry_sdk.integrations.django import DjangoIntegration  # @UnresolvedImport
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration(), ],
+        traces_sample_rate=1.0,
+        send_default_pii=True,
+    )
+
+#------------------------------------------------------------------------------
+
+CACHE_BACKEND = 'django.core.cache.backends.memcached.MemcachedCache'
+CACHE_LOCATION = '127.0.0.1:11211'
+CACHE_PREFIX = 'llm_performance'
+
+#------------------------------------------------------------------------------
+#--- DATABASE DEFAULTS
+DATABASES_OPTIONS = {}
+DATABASES_TEST = {}
+DATABASES_CONN_MAX_AGE = 0
+
+# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
+DATABASES = {
+    'default': {
+        'ENGINE': getattr(params, 'DATABASES_ENGINE'),
+        'NAME': getattr(params, 'DATABASES_NAME'),
+        'OPTIONS': DATABASES_OPTIONS,
+        'TEST': DATABASES_TEST,
+        'CONN_MAX_AGE': DATABASES_CONN_MAX_AGE,
+    }
+}
+
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_STORAGE_OPTIONS = getattr(params, 'DBBACKUP_STORAGE_OPTIONS', {'location': '/tmp'})
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+# overwrite live settings if something was set in src/main/params.py
+for key in ('ENGINE', 'HOST', 'PORT', 'USER', 'PASSWORD'):
+    try:
+        key_with_prefix = 'DATABASES_{}'.format(key)
+        if hasattr(params, key_with_prefix):
+            DATABASES['default'][key] = getattr(params, key_with_prefix)
+    except KeyError:
+        pass
+
+#------------------------------------------------------------------------------
+#--- Email settings
+EMAIL_BACKEND = getattr(params, 'EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = getattr(params, 'EMAIL_HOST', '')
+EMAIL_HOST_USER = getattr(params, 'EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = getattr(params, 'EMAIL_HOST_PASSWORD', '')
+EMAIL_PORT = getattr(params, 'EMAIL_PORT', 465)
+EMAIL_USE_TLS = getattr(params, 'EMAIL_USE_TLS', False)
+EMAIL_USE_SSL = getattr(params, 'EMAIL_USE_SSL', True)
+EMAIL_ADMIN = getattr(params, 'EMAIL_ADMIN', '')
+
+DEFAULT_FROM_EMAIL = getattr(params, 'DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+
+#------------------------------------------------------------------------------
+#--- Django Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    ),
+}
+
+#------------------------------------------------------------------------------
+#--- USER LOGIN/AUTH/COOKIE
+ENABLE_USER_ACTIVATION = True
+LOGIN_VIA_EMAIL = True
+LOGIN_REDIRECT_URL = '/'
+ACTIVATION_CODE_EXPIRING_MINUTE = getattr(params, 'ACTIVATION_CODE_EXPIRING_MINUTE', 15)
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+
+SESSION_COOKIE_NAME = 'llm_performance_sid'
+CSRF_COOKIE_NAME = 'llm_performance_csrftoken'
+
+#------------------------------------------------------------------------------
+#--- CUSTOM USER MODEL
+# https://www.codingforentrepreneurs.com/blog/how-to-create-a-custom-django-user-model/
+AUTH_USER_MODEL = 'accounts.Account'
+
+#------------------------------------------------------------------------------
+#--- LOGIN SETTINGS
+LOGIN_URL = '/accounts/login/'
+
+#------------------------------------------------------------------------------
+#--- django-extensions graph models
+# https://django-extensions.readthedocs.io/en/latest/graph_models.html
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}
+
+#------------------------------------------------------------------------------
+#--- GOOGLE RE-CAPTCHA KEYS
+GOOGLE_RECAPTCHA_SITE_KEY = getattr(params, 'GOOGLE_RECAPTCHA_SITE_KEY', '')
+GOOGLE_RECAPTCHA_SECRET_KEY = getattr(params, 'GOOGLE_RECAPTCHA_SECRET_KEY', '')
+
+#------------------------------------------------------------------------------
+#--- ADMIN PANEL RESTRICTIONS
+RESTRICT_ADMIN = getattr(params, 'RESTRICT_ADMIN', False)
+ALLOWED_ADMIN_IPS = getattr(params, 'ALLOWED_ADMIN_IPS', ['127.0.0.1', '::1'])
+ALLOWED_ADMIN_IP_RANGES = getattr(params, 'ALLOWED_ADMIN_IP_RANGES', ['127.0.0.0/24', '::/1'])
+RESTRICTED_APP_NAMES = ['admin']
+TRUST_PRIVATE_IP = getattr(params, 'TRUST_PRIVATE_IP', False)
+
+#------------------------------------------
+#--- Last line is just for testing purposes
+LOADED_OK = 'OK'

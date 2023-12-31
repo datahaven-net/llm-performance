@@ -15,7 +15,7 @@
           <h1>Welcome to llmperformance.ai</h1>
         {% endif %}
         <br />
-        <form action="{% url 'domain_lookup' %}" method="post">
+        <form action="{% url 'llm_performance_report' %}" method="post">
           {% csrf_token %}
           <div class="form-row justify-content-center">
             <div class="col-lg-3">

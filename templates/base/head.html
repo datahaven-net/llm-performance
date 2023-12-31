@@ -54,9 +54,6 @@
                         </li>
                         {% if request.user.is_staff %}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle {% if url_name == 'financial_report' %}active{% endif %}" href="{% url 'financial_report' %}" id="navbarDropdownMenuManagement" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Management
-                            </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuManagement">
                                 <a class="dropdown-item" href="/admin/">Django Admin</a>
                             </div>
@@ -73,11 +70,11 @@
                         <li class="nav-item">
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle {% if url_name == 'account_profile' or url_name == 'password_change' %}active{% endif %}" href="#" id="navbarDropdownMenuProfile" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle {% if url_name == 'accounts_profile' or url_name == 'password_change' %}active{% endif %}" href="#" id="navbarDropdownMenuProfile" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               {{ user.email }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuProfile">
-                                <a class="dropdown-item" href="{% url 'account_profile' %}">My Profile</a>
+                                <a class="dropdown-item" href="{% url 'accounts_profile' %}">My Profile</a>
                                 <a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
                                 <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
                             </div>

@@ -1,0 +1,17 @@
+{% extends 'base/container_sm_4.html' %}
+
+{% block content %}
+
+
+<h4>Logged out</h4>
+
+<p>
+  We wish you a good time and see you again.
+</p>
+
+<p>
+  <a href="{% url 'two_factor:login' %}">Log in again</a>
+</p>
+
+
+{% endblock %}
