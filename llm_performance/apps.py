@@ -2,8 +2,7 @@ from django.apps import AppConfig
 
 
 class AccountsConfig(AppConfig):
-    name = 'accounts'
+    name = 'llm_performance'
 
     def ready(self):
-        """Location for package configurations"""
         return True

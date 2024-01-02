@@ -12,7 +12,7 @@
 
   <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div><br />
 
-  <button class="btn btn-primary">Login</button>
+  <button class="btn btn-primary">login</button>
 </form>
 
 
@@ -20,7 +20,10 @@
 
 <ul>
   <li>
-    <a href="{% url 'password_reset' %}">Password Reset</a>
+    <a href="{% url 'password_reset' %}">create an account</a>
+  </li>
+  <li>
+    <a href="{% url 'password_reset' %}">password reset</a>
   </li>
 </ul>
 

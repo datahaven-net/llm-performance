@@ -1,11 +1,17 @@
 import logging
 
-from django.views.generic import TemplateView
-
 from django import shortcuts
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
 
 from accounts.users import create_profile
+
+from llm_performance.models import PerformanceSnapshot
+from llm_performance.forms import ReportSendForm
 
 
 def validate_profile_exists(dispatch_func):
@@ -35,3 +41,42 @@ class IndexPageView(TemplateView):
         if self.request.user.is_authenticated:
             pass
         return context
+
+
+class ReportSendView(FormView):
+    template_name = 'report/send.html'
+    form_class = ReportSendForm
+    success_url = reverse_lazy('index')
+
+    @validate_profile_exists
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = FormView.get_form_kwargs(self)
+        kwargs['initial']['name'] = self.request.user.profile.person_name
+        kwargs['initial']['email'] = self.request.user.email
+        return kwargs
+
+    def form_valid(self, form):
+        try:
+            PerformanceSnapshot.objects.create(
+                input=form.cleaned_data['message'],
+                cpu=form.cleaned_data['cpu'],
+                gpu=form.cleaned_data['gpu'],
+                total_duration=0,
+                load_duration=0,
+                prompt_eval_count=0,
+                prompt_eval_duration=0,
+                prompt_eval_rate=0,
+                eval_count=0,
+                eval_duration=0,
+                eval_rate=0,
+            )
+        except Exception as err:
+            logger.exception(err)
+            messages.error(self.request, 'Because of technical error your report was not submitted')
+            return super(ReportSendView, self).form_valid(form)
+        messages.success(self.request, 'LLM performance report successfilly sent, we will review your submission and soon update gathered statistics. Thank you for cooperation.')
+        return super(ReportSendView, self).form_valid(form)

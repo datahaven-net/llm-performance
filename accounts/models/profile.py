@@ -15,21 +15,21 @@ class Profile(models.Model):
 
     account = models.OneToOneField(Account, on_delete=models.CASCADE, related_name='profile')
 
-    person_name = models.CharField(max_length=255, verbose_name='Full Name')
+    person_name = models.CharField(max_length=255, verbose_name='user name')
 
-    contact_email = models.CharField(validators=[validate_email], max_length=255, verbose_name='Email')
+    contact_email = models.CharField(validators=[validate_email], max_length=255, verbose_name='e-mail')
 
     email_notifications_enabled = models.BooleanField(
-        verbose_name='Email notifications',
-        help_text='Enable email notifications',
+        verbose_name='e-mail notifications',
+        help_text='enable e-mail notifications',
         default=True,
     )
 
     def __str__(self):
-        return 'Profile({}:{})'.format(self.person_name, self.contact_email)
+        return 'profile({}:{})'.format(self.person_name, self.contact_email)
 
     def __repr__(self):
-        return 'Profile({}:{})'.format(self.person_name, self.contact_email)
+        return 'profile({}:{})'.format(self.person_name, self.contact_email)
 
     def is_complete(self):
         # TODO: extra regex validators to be added later

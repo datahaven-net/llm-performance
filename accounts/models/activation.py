@@ -10,4 +10,4 @@ class Activation(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='activations', )
 
     def __str__(self):
-        return 'Activation({})'.format(self.account.email)
+        return 'activation({})'.format(self.account.email)

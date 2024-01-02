@@ -1,0 +1,56 @@
+{% extends 'base/container_sm_8.html' %}
+
+{% block content %}
+
+<h2>
+    your <code>ollama</code> execution report helps us to gather world wide statistics about LLM performance
+</h2>
+
+<br />
+
+<form method="post">
+{% csrf_token %}
+{% bootstrap_form_errors form type='non_fields' %}
+
+<div class="row">
+
+  <div class="col-12">
+    <fieldset>
+      {% bootstrap_field form.name layout="horizontal" placeholder="" size="small" label_class="form-label col-sm-4 text-left" horizontal_field_class="col-sm-8" %}
+      {% bootstrap_field form.email layout="horizontal" placeholder="" size="small" label_class="form-label col-sm-4 text-left" horizontal_field_class="col-sm-8" %}
+    </fieldset>
+  </div>
+
+  <div class="col-12">
+    <fieldset>
+      {% bootstrap_field form.cpu layout="horizontal" placeholder="Intel(R) Core(TM) i7-6500U CPU @ 2.50GHz" size="small" label_class="form-label col-sm-4 text-left" horizontal_field_class="col-sm-8" %}
+    </fieldset>
+  </div>
+
+  <div class="col-12">
+    <fieldset>
+      {% bootstrap_field form.gpu layout="horizontal" placeholder="Intel Corporation Skylake GT2 [HD Graphics 520] (rev 07)" size="small" label_class="form-label col-sm-4 text-left" horizontal_field_class="col-sm-8" %}
+    </fieldset>
+  </div>
+
+  <div class="col-12">
+    <fieldset>
+      {% bootstrap_field form.message layout="vertical" placeholder="" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-8" %}
+    </fieldset>
+  </div>
+
+  <div class="col-12">
+    <fieldset>
+      {% bootstrap_field form.duplicate layout="horizontal" placeholder="" size="small" label_class="form-label col-sm-4 text-left" horizontal_field_class="col-sm-8" %}
+    </fieldset>
+  </div>
+
+  <div class="col">
+    <button type="submit" class="btn btn-primary btn-block mb-4">send this report to the www.llmperformance.ai team</button>
+  </div>
+
+</div>
+
+</form>
+
+{% endblock %}

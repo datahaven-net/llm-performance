@@ -32,7 +32,7 @@ admin_patterns = [
 ]
 
 auth_patterns = [
-    # Register, logout, password change/reset/forgotten flows go through "accounts" module.
+    path('accounts/login/', accounts_views.SignInView.as_view(), name='login'),
     path('accounts/profile/', accounts_views.AccountProfileView.as_view(), name='accounts_profile'),
     path('accounts/logout/', auth_views.LogoutView.as_view(
         template_name='accounts/logout.html'), name='logout'),
@@ -53,6 +53,7 @@ auth_patterns = [
 ]
 
 patterns = [
+    path('report/send/', llm_performance_views.ReportSendView.as_view(), name='report_send'),
     path('', llm_performance_views.IndexPageView.as_view(), name='index'),
 ]
 

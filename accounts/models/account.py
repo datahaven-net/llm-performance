@@ -68,12 +68,12 @@ class Account(AbstractUser):
     # profile -> accounts.models.profile.Profile
 
     email = models.EmailField(
-        verbose_name='email address',
+        verbose_name='e-mail address',
         max_length=255,
         unique=True,
         null=False,
         blank=False,
-        help_text='user email address',
+        help_text='user e-mail address',
     )
 
     notes = models.TextField(
@@ -84,10 +84,10 @@ class Account(AbstractUser):
     )
 
     def __str__(self):
-        return 'Account({})'.format(self.email)
+        return 'account({})'.format(self.email)
 
     def __repr__(self):
-        return 'Account({})'.format(self.email)
+        return 'account({})'.format(self.email)
 
     @property
     def username(self):
