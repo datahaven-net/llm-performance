@@ -1,12 +1,21 @@
 llm_performance/params.py
-
 static_html/
-
 static/*
+.pip_download
+build.properties
+build.properties.json
+REVISION
+db.sqlite3
+db.sqlite
+llm-performance-*.tgz
+setup.py
+venv
 
-*.iml
+requirements/requirements-dev.txt
+
 
 ## Directory-based project format:
+*.iml
 .idea/
 # if you remove the above rule, at least ignore the following:
 
@@ -161,17 +170,3 @@ target/
 *.un~
 Session.vim
 .netrwhist
-
-.pip_download
-build.properties
-build.properties.json
-REVISION
-db.sqlite
-llm-performance-*.tgz
-setup.py
-venv
-src/main/params.py
-
-
-# Developer requirements
-requirements/requirements-dev.txt

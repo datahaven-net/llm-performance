@@ -14,9 +14,47 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
 
-urlpatterns = [
+from django.contrib import admin
+from django.contrib.auth import views as auth_views
+from django.urls import path
+from django.conf.urls import include
+
+from accounts import views as accounts_views
+
+from llm_performance import views as llm_performance_views
+
+
+admin_patterns = [
+    path('grappelli/', include('grappelli.urls')),
+    path('_nested_admin/', include('nested_admin.urls')),
     path('admin/', admin.site.urls),
 ]
+
+auth_patterns = [
+    path('accounts/login/', accounts_views.SignInView.as_view(), name='login'),
+    path('accounts/profile/', accounts_views.AccountProfileView.as_view(), name='accounts_profile'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(
+        template_name='accounts/logout.html'), name='logout'),
+    path('accounts/register/', accounts_views.SignUpView.as_view(), name='register'),
+    path('accounts/activate/<code>/', accounts_views.ActivateView.as_view(), name='activate'),
+    path('accounts/password/change/', auth_views.PasswordChangeView.as_view(
+        template_name='accounts/password_change_form.html'), name='password_change'),
+    path('accounts/password/change/done/', auth_views.PasswordChangeDoneView.as_view(
+        template_name='accounts/password_change_done.html'), name='password_change_done'),
+    path('accounts/password/reset/', accounts_views.CustomPasswordResetView.as_view(
+        template_name='accounts/password_reset.html'), name='password_reset'),
+    path('accounts/password/reset/done/', auth_views.PasswordResetDoneView.as_view(
+        template_name='accounts/password_reset_done.html'), name='password_reset_done'),
+    path('accounts/password/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+        template_name='accounts/password_reset_confirm.html'), name='password_reset_confirm'),
+    path('accounts/password/reset/done/', auth_views.PasswordResetCompleteView.as_view(
+        template_name='accounts/password_reset_complete.html'), name='password_reset_complete'),
+]
+
+patterns = [
+    path('report/send/', llm_performance_views.ReportSendView.as_view(), name='report_send'),
+    path('', llm_performance_views.IndexPageView.as_view(), name='index'),
+]
+
+urlpatterns = admin_patterns + auth_patterns + patterns

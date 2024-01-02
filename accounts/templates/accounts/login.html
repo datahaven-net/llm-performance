@@ -1,0 +1,31 @@
+{% extends 'base/container_sm_4.html' %}
+
+{% block content %}
+
+
+<h4>Log in</h4>
+
+<form method="post">
+  {% csrf_token %}
+
+  {% bootstrap_form form %}
+
+  <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div><br />
+
+  <button class="btn btn-primary">login</button>
+</form>
+
+
+<hr>
+
+<ul>
+  <li>
+    <a href="{% url 'password_reset' %}">create an account</a>
+  </li>
+  <li>
+    <a href="{% url 'password_reset' %}">password reset</a>
+  </li>
+</ul>
+
+
+{% endblock %}
