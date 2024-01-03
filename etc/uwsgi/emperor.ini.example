@@ -3,4 +3,4 @@ emperor = /home/user/llm-performance/etc/uwsgi/vassals
 uid = www-data
 gid = www-data
 plugins = python38
-logger = file:/home/user/llm-performance/logs/uwsgi-emperor.log
+logger = file:/home/user/llm-performance/log/uwsgi-emperor

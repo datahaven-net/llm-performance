@@ -1,0 +1,16 @@
+/home/user/llm-performance/log/nginx
+/home/user/llm-performance/log/uwsgi-emperor
+/home/user/llm-performance/log/uwsgi
+{
+  rotate 6
+  monthly
+  compress
+  missingok
+  notifempty
+  postrotate
+    sleep 1
+    XDG_RUNTIME_DIR=/run/user/<put your $UID here> /bin/su -c "touch /home/user/llm-performance/etc/uwsgi/vassals/llm-performance.ini" user
+    sleep 1
+    /bin/echo "`date` uwsgi vassals restarted" >> /home/user/llm-performance/log/logrotate
+  endscript
+}
