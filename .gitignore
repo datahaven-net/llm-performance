@@ -1,8 +1,13 @@
 llm_performance/params.py
-etc/uwsgi/vassals/llm-performance.ini
+
+etc/systemd/system/uwsgi-emperor.service
+etc/nginx/llm-performance
 etc/uwsgi/emperor.ini
+etc/uwsgi/vassals/llm-performance.ini
 etc/uwsgi/local.uwsgi.ini
-etc/uwsgi/vassals/llm-performance
+
+log/
+
 static/*
 static_html/
 
