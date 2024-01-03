@@ -40,8 +40,8 @@ server {
 
     server_name buy-my-domain.com www.buy-my-domain.com;
 
-    ssl_certificate     /home/user/ssl/zenaida.crt;
-    ssl_certificate_key /home/user/ssl/zenaida.key;
+    ssl_certificate     /home/user/ssl/llm-performance.crt;
+    ssl_certificate_key /home/user/ssl/llm-performance.key;
     ssl_ciphers         EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH;
     ssl_protocols       TLSv1.1 TLSv1.2;
 
