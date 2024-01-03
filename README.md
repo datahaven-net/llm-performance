@@ -139,7 +139,7 @@ Install nginx if you do not have it yet installed:
 Activate nginx site configuration by creating a sym-link:
 
         cp etc/nginx/llm-performance.example etc/nginx/llm-performance
-        sudo ln -s /home/user/llm-performance/etc/nginx/llm-performance /etc/nginx/sites-enabled/
+        sudo ln -s /home/user/llm-performance/etc/nginx/llm-performance /etc/nginx/sites-enabled/llm-performance
         sudo unlink /etc/nginx/sites-enabled/default
         sudo nano /etc/nginx/sites-enabled/llm-performance  # modify the file with your actual configuration
 
@@ -157,8 +157,15 @@ We will need one vassal to be running and serving web site traffic.
 
 The main uwsgi emperor process will be starting as systemd service:
 
+        cp etc/uwsgi/emperor.ini.example etc/uwsgi/emperor.ini
+        nano etc/uwsgi/emperor.ini  # modify the file with your actual configuration
+
+        cp etc/uwsgi/vassals/llm-performance.example etc/uwsgi/vassals/llm-performance
+        nano etc/uwsgi/vassals/llm-performance  # modify the file with your actual configuration
+
         cp etc/systemd/system/uwsgi-emperor.service.example etc/systemd/system/uwsgi-emperor.service
-        sudo ln -s /home/user/llm-performance/etc/systemd/system/uwsgi-emperor.service /etc/systemd/system/
+        sudo ln -s /home/user/llm-performance/etc/systemd/system/uwsgi-emperor.service /etc/systemd/system/uwsgi-emperor.service
+        sudo nano /etc/systemd/system/uwsgi-emperor.service  # modify the file with your actual configuration
 
 
 Now start uwsgi emperor service:
