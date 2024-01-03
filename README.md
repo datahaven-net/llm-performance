@@ -113,11 +113,12 @@ For production configuration you can take a look at some examples in `etc/` fold
 You might want to use your own tweaks for nginx and uwsgi, so those files are just a starting point for you.
 Configuration here was tested on Ubuntu 18.04.1 LTS server.
 
-First lets create a separate folder to store all interesting logs in one place and configure log rotation:
+First we create a separate folder to store all interesting logs in one place. And we need to configure our log rotation:
 
-        mkdir /home/user/llm-performance/logs/
-        sudo chown www-data:user -R /home/user/llm-performance/logs/
-        sudo cp etc/logrotate.d/user /etc/logrotate.d/
+        mkdir /home/user/llm-performance/log/
+        sudo chown www-data:user -R /home/user/llm-performance/log/
+        sudo cp etc/logrotate.d/llm-performance.example /etc/logrotate.d/llm-performance
+        sudo nano /etc/logrotate.d/llm-performance  # modify the file with your actual configuration
 
 
 Add `www-data` user to `user` group so uwsgi process will be able to access log files created by Django:
@@ -140,6 +141,7 @@ Activate nginx site configuration by creating a sym-link:
         cp etc/nginx/llm-performance.example etc/nginx/llm-performance
         sudo ln -s /home/user/llm-performance/etc/nginx/llm-performance /etc/nginx/sites-enabled/
         sudo unlink /etc/nginx/sites-enabled/default
+        sudo nano /etc/nginx/sites-enabled/llm-performance  # modify the file with your actual configuration
 
 
 To secure your site you need to configure SSL certificate. Check `etc/nginx/llm-performance` file to configure crtificate and key files location. Here is an example SSL config you can use to build your setup:

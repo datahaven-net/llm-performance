@@ -1,6 +1,11 @@
 llm_performance/params.py
-static_html/
+etc/uwsgi/vassals/llm-performance.ini
+etc/uwsgi/emperor.ini
+etc/uwsgi/local.uwsgi.ini
+etc/uwsgi/vassals/llm-performance
 static/*
+static_html/
+
 .pip_download
 build.properties
 build.properties.json

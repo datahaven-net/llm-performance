@@ -1,7 +1,7 @@
 # vassal live config
 
 [uwsgi]
-logger = file:/home/user/llm-performance/logs/uwsgi.log
+logger = file:/home/user/llm-performance/log/uwsgi
 chdir = /home/user/llm-performance/
 module = wsgi:application
 socket = 127.0.0.1:12321

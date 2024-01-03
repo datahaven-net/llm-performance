@@ -1,0 +1,59 @@
+# nginx configuration
+#
+# Add custom nginx locations and specific settings here.
+#
+# Activate site configuration by creating a sym-link:
+#
+#         cd /home/user/llm-performance/
+#         cp etc/nginx/llm-performance.example etc/nginx/llm-performance
+#         sudo ln -s /home/user/llm-performance/etc/nginx/llm-performance /etc/nginx/sites-enabled/
+#
+#
+# Restart Nginx:
+# 
+#         sudo service nginx restart
+#
+#
+# TODO: protect TCP socket port 12321 from outside
+# 
+
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name buy-my-domain.com www.buy-my-domain.com;
+    return 301 https://$server_name$request_uri;
+
+    client_max_body_size 100M;
+}
+
+
+server {
+    access_log /home/user/llm-performance/log/nginx;
+    error_log /home/user/llm-performance/log/nginx.err;
+
+    listen 443 ssl default_server;
+    listen [::]:443 ssl default_server ipv6only=on;
+
+    root /var/www/;
+    index index.html index.htm;
+
+    server_name buy-my-domain.com www.buy-my-domain.com;
+
+    ssl_certificate     /home/user/ssl/zenaida.crt;
+    ssl_certificate_key /home/user/ssl/zenaida.key;
+    ssl_ciphers         EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH;
+    ssl_protocols       TLSv1.1 TLSv1.2;
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass 127.0.0.1:12321;
+    }
+
+    location /static {    
+        autoindex on;    
+        alias /home/user/llm-performance/static/;
+    }
+
+    client_max_body_size 100M;
+}
