@@ -160,8 +160,8 @@ The main uwsgi emperor process will be starting as systemd service:
         cp etc/uwsgi/emperor.ini.example etc/uwsgi/emperor.ini
         nano etc/uwsgi/emperor.ini  # modify the file with your actual configuration
 
-        cp etc/uwsgi/vassals/llm-performance.example etc/uwsgi/vassals/llm-performance
-        nano etc/uwsgi/vassals/llm-performance  # modify the file with your actual configuration
+        cp etc/uwsgi/vassals/llm-performance.ini.example etc/uwsgi/vassals/llm-performance.ini
+        nano etc/uwsgi/vassals/llm-performance.ini  # modify the file with your actual configuration
 
         cp etc/systemd/system/uwsgi-emperor.service.example etc/systemd/system/uwsgi-emperor.service
         sudo ln -s /home/user/llm-performance/etc/systemd/system/uwsgi-emperor.service /etc/systemd/system/uwsgi-emperor.service
