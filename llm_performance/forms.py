@@ -1,14 +1,8 @@
+# -*- coding: UTF-8 -*-
+
+import re
+
 from django.forms import forms, fields, widgets
-
-
-def encode_ascii_for_list_of_strings(values):
-    for value in values:
-        if isinstance(value, str):
-            try:
-                value.encode('ascii')
-            except UnicodeEncodeError:
-                raise forms.ValidationError('Please use only English characters')
-    return True
 
 
 class ReportSendForm(forms.Form):
@@ -25,15 +19,15 @@ class ReportSendForm(forms.Form):
 
     cpu = fields.CharField(
         label='CPU model name:',
-        help_text='',
+        help_text='here you enter full model name of your Central Processor',
     )
 
     gpu = fields.CharField(
         label='GPU model name:',
-        help_text='',
+        help_text='enter here details about your Graphics Processing Unit model',
     )
 
-    message = fields.CharField(
+    message = fields.RegexField(
         label='command output (copy & paste from the terminal):',
         widget=widgets.Textarea(attrs={
             'rows': 20,
@@ -56,7 +50,23 @@ prompt eval rate:     2.09 tokens/s
 eval count:           39 token(s)
 eval duration:        23.039657s
 eval rate:            1.69 tokens/s''',
-        })
+        }),
+        regex=re.compile(
+            pattern='^.*?ollama.+\-\-verbose.+'
+                    'total duration\:\s+?(?P<total_duration>[\d\.ywduhmnsµμ]+)\s+'
+                    'load duration\:\s+?(?P<load_duration>[\d\.ywduhmnsµμ]+)\s+'
+                    'prompt eval count\:\s+?(?P<prompt_eval_count>\d+).+\s+'
+                    'prompt eval duration\:\s+?(?P<prompt_eval_duration>[\d\.ywduhmnsµμ]+)\s+'
+                    'prompt eval rate\:\s+?(?P<prompt_eval_rate>[\d\.]+).+\s+'
+                    'eval count\:\s+?(?P<eval_count>\d+).+\s+'
+                    'eval duration\:\s+?(?P<eval_duration>[\d\.ywduhmnsµμ]+)\s+'
+                    'eval rate\:\s+?(?P<eval_rate>[\d\.]+).+\s*'
+                    '.*?$',
+            flags=re.MULTILINE | re.IGNORECASE | re.DOTALL,
+        ),
+        error_messages={
+            'invalid': 'please copy & paste the whole text output after ollama execution'
+        },
     )
 
     duplicate = fields.BooleanField(
@@ -66,5 +76,10 @@ eval rate:            1.69 tokens/s''',
 
     def clean(self):
         cleaned_data = super(ReportSendForm, self).clean()
-        encode_ascii_for_list_of_strings(cleaned_data.values())
+        for value in cleaned_data.values():
+            if isinstance(value, str):
+                try:
+                    value.encode('ascii')
+                except UnicodeEncodeError:
+                    raise forms.ValidationError('Please use only English characters')
         return cleaned_data

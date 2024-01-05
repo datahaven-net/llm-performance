@@ -1,5 +1,7 @@
 import logging
 
+import durationpy
+
 from django import shortcuts
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -59,20 +61,24 @@ class ReportSendView(FormView):
         kwargs['initial']['email'] = self.request.user.email
         return kwargs
 
+    def to_seconds(self, dur):
+        return durationpy.from_str(dur).total_seconds()
+
     def form_valid(self, form):
+        ret = form.fields['message']._get_regex().match(form.data['message'])
         try:
             PerformanceSnapshot.objects.create(
                 input=form.cleaned_data['message'],
                 cpu=form.cleaned_data['cpu'],
                 gpu=form.cleaned_data['gpu'],
-                total_duration=0,
-                load_duration=0,
-                prompt_eval_count=0,
-                prompt_eval_duration=0,
-                prompt_eval_rate=0,
-                eval_count=0,
-                eval_duration=0,
-                eval_rate=0,
+                total_duration=self.to_seconds(ret.group('total_duration')),
+                load_duration=self.to_seconds(ret.group('load_duration')),
+                prompt_eval_count=ret.group('prompt_eval_count'),
+                prompt_eval_duration=self.to_seconds(ret.group('prompt_eval_duration')),
+                prompt_eval_rate=ret.group('prompt_eval_rate'),
+                eval_count=ret.group('eval_count'),
+                eval_duration=self.to_seconds(ret.group('eval_duration')),
+                eval_rate=ret.group('eval_rate'),
             )
         except Exception as err:
             logger.exception(err)
