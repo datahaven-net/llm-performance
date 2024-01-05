@@ -76,10 +76,11 @@ eval rate:            1.69 tokens/s''',
 
     def clean(self):
         cleaned_data = super(ReportSendForm, self).clean()
-        for value in cleaned_data.values():
-            if isinstance(value, str):
-                try:
-                    value.encode('ascii')
-                except UnicodeEncodeError:
-                    raise forms.ValidationError('Please use only English characters')
+        for name, value in cleaned_data.items():
+            if name != 'message':
+                if isinstance(value, str):
+                    try:
+                        value.encode('ascii')
+                    except UnicodeEncodeError:
+                        raise forms.ValidationError('Please use only English characters')
         return cleaned_data

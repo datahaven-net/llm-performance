@@ -1,7 +1,5 @@
 import logging
 
-import durationpy
-
 from django import shortcuts
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -14,6 +12,7 @@ from accounts.users import create_profile
 
 from llm_performance.models import PerformanceSnapshot
 from llm_performance.forms import ReportSendForm
+from llm_performance import duration
 
 
 def validate_profile_exists(dispatch_func):
@@ -61,9 +60,6 @@ class ReportSendView(FormView):
         kwargs['initial']['email'] = self.request.user.email
         return kwargs
 
-    def to_seconds(self, dur):
-        return durationpy.from_str(dur).total_seconds()
-
     def form_valid(self, form):
         ret = form.fields['message']._get_regex().match(form.data['message'])
         try:
@@ -71,13 +67,13 @@ class ReportSendView(FormView):
                 input=form.cleaned_data['message'],
                 cpu=form.cleaned_data['cpu'],
                 gpu=form.cleaned_data['gpu'],
-                total_duration=self.to_seconds(ret.group('total_duration')),
-                load_duration=self.to_seconds(ret.group('load_duration')),
+                total_duration=duration.from_str(ret.group('total_duration')),
+                load_duration=duration.from_str(ret.group('load_duration')),
                 prompt_eval_count=ret.group('prompt_eval_count'),
-                prompt_eval_duration=self.to_seconds(ret.group('prompt_eval_duration')),
+                prompt_eval_duration=duration.from_str(ret.group('prompt_eval_duration')),
                 prompt_eval_rate=ret.group('prompt_eval_rate'),
                 eval_count=ret.group('eval_count'),
-                eval_duration=self.to_seconds(ret.group('eval_duration')),
+                eval_duration=duration.from_str(ret.group('eval_duration')),
                 eval_rate=ret.group('eval_rate'),
             )
         except Exception as err:
