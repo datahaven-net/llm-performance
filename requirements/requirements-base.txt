@@ -21,3 +21,5 @@ django-dbbackup
 pdfkit
 
 python-dateutil
+
+durationpy
