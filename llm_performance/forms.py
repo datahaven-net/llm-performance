@@ -10,21 +10,41 @@ class ReportSendForm(forms.Form):
     name = fields.CharField(
         label='user name:',
         disabled=True,
+        required=True,
     )
 
     email = fields.CharField(
         label='e-mail:',
         disabled=True,
+        required=True,
     )
 
     cpu = fields.CharField(
         label='CPU model name:',
-        help_text='here you enter full model name of your Central Processor',
+        help_text='enter full model name of your Central Processor Unit',
+        max_length=256,
+        required=True,
+    )
+
+    ram = fields.IntegerField(
+        label='RAM size in Gigabytes:',
+        help_text='physical Random Access Memory size of your machine',
+        min_value=1,
+        required=False,
     )
 
     gpu = fields.CharField(
         label='GPU model name:',
-        help_text='enter here details about your Graphics Processing Unit model',
+        help_text='details about your Graphics Processing Unit model',
+        max_length=256,
+        required=True,
+    )
+
+    vram = fields.IntegerField(
+        label='VRAM size in Gigabytes:',
+        help_text='Video Random Access Memory (GPU memory) size',
+        min_value=1,
+        required=False,
     )
 
     message = fields.RegexField(
@@ -51,8 +71,9 @@ eval count:           39 token(s)
 eval duration:        23.039657s
 eval rate:            1.69 tokens/s''',
         }),
+        max_length=1024*50,
         regex=re.compile(
-            pattern='^.*?ollama.+\-\-verbose.+'
+            pattern='^.*?ollama\s+run\s+.*?(?P<llm_model>\w+)\s+.*?'
                     'total duration\:\s+?(?P<total_duration>[\d\.ywduhmnsµμ]+)\s+'
                     'load duration\:\s+?(?P<load_duration>[\d\.ywduhmnsµμ]+)\s+'
                     'prompt eval count\:\s+?(?P<prompt_eval_count>\d+).+\s+'
@@ -65,8 +86,9 @@ eval rate:            1.69 tokens/s''',
             flags=re.MULTILINE | re.IGNORECASE | re.DOTALL,
         ),
         error_messages={
-            'invalid': 'please copy & paste the whole text output after ollama execution'
+            'invalid': 'please copy & paste the whole text output after ollama execution, run ollama with "--verbose" flag'
         },
+        required=True,
     )
 
     duplicate = fields.BooleanField(

@@ -13,11 +13,22 @@ class Profile(models.Model):
         base_manager_name = 'profiles'
         default_manager_name = 'profiles'
 
-    account = models.OneToOneField(Account, on_delete=models.CASCADE, related_name='profile')
+    account = models.OneToOneField(
+        Account,
+        on_delete=models.CASCADE,
+        related_name='profile',
+    )
 
-    person_name = models.CharField(max_length=255, verbose_name='user name')
+    person_name = models.CharField(
+        max_length=255,
+        verbose_name='user name',
+    )
 
-    contact_email = models.CharField(validators=[validate_email], max_length=255, verbose_name='e-mail')
+    contact_email = models.CharField(
+        validators=[validate_email, ],
+        max_length=255,
+        verbose_name='e-mail',
+    )
 
     email_notifications_enabled = models.BooleanField(
         verbose_name='e-mail notifications',
