@@ -27,6 +27,7 @@ class PerformanceSnapshot(models.Model):
         null=True,
         blank=True,
         default=None,
+        db_index=True,
     )
 
     ram = models.IntegerField(
@@ -34,7 +35,7 @@ class PerformanceSnapshot(models.Model):
         null=True,
         blank=True,
         default=None,
-        db_index=False,
+        db_index=True,
     )
 
     gpu = models.CharField(
@@ -49,6 +50,7 @@ class PerformanceSnapshot(models.Model):
         null=True,
         blank=True,
         default=None,
+        db_index=True,
     )
 
     vram = models.IntegerField(
@@ -56,7 +58,7 @@ class PerformanceSnapshot(models.Model):
         null=True,
         blank=True,
         default=None,
-        db_index=False,
+        db_index=True,
     )
 
     total_duration = models.FloatField(
@@ -96,6 +98,7 @@ class PerformanceSnapshot(models.Model):
         null=True,
         blank=True,
         default=None,
+        db_index=True,
     )
 
     approved = models.BooleanField(
@@ -106,4 +109,5 @@ class PerformanceSnapshot(models.Model):
         Account,
         on_delete=models.CASCADE,
         related_name='reports',
+        db_index=True,
     )
