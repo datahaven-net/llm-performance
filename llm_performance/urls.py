@@ -17,8 +17,9 @@ Including another URLconf
 
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.urls import path
 from django.conf.urls import include
+from django.views.generic import TemplateView
+from django.urls import path
 
 from accounts import views as accounts_views
 
@@ -54,6 +55,7 @@ auth_patterns = [
 
 patterns = [
     path('report/send/', llm_performance_views.ReportSendView.as_view(), name='report_send'),
+    path('faq/', TemplateView.as_view(template_name='faq/faq_page.html'), name='faq'),
     path('', llm_performance_views.IndexPageView.as_view(), name='index'),
 ]
 

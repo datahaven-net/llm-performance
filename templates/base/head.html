@@ -33,6 +33,10 @@
         .btn-margin-right {
             margin-right: 8px;
         }
+        .nav-item {
+        	padding-left: 10px;
+        	padding-right: 10px;
+        }
     </style>
 
 </head>
@@ -40,7 +44,7 @@
 <body>
 <header>
     <nav class="navbar navbar-expand-md navbar-light bg-white static-top">
-        <a class="navbar-brand" href="/">LLM performance</a>
+        <!-- <a class="navbar-brand" href="/">LLM performance</a> -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -48,6 +52,9 @@
             {% with url_name=request.resolver_match.url_name %}
                 {% if request.user.is_authenticated %}
                     <ul class="navbar-nav mr-auto">
+                        <li class="nav-item {% if url_name == 'index' %}active{% endif %}">
+					        <a class="nav-link" href="{% url 'index' %}">LLM performance</a>
+                        </li>
                     </ul>
                     <ul class="navbar-nav">
                         {% if url_name != 'report_send' %}
@@ -55,6 +62,10 @@
                             <a class="btn btn-success btn-margin-right" href="{% url 'report_send' %}" role="button"><code><b>Contribute Results</b></code></a>
                         </li>
                         {% endif %}
+
+                        <li class="nav-item {% if url_name == 'faq' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'faq' %}">faq</a>
+                        </li>
 
                         {% if request.user.is_staff %}
                         <li class="nav-item dropdown">
@@ -80,6 +91,9 @@
                     </ul>
                 {% else %}
                     <ul class="navbar-nav mr-auto">
+                        <li class="nav-item {% if url_name == 'index' %}active{% endif %}">
+					        <a class="nav-link" href="{% url 'index' %}">LLM performance</a>
+                        </li>
                     </ul>
                     <ul class="navbar-nav">
                         {% if url_name != 'report_send' %}
@@ -87,6 +101,10 @@
                             <a class="btn btn-success btn-margin-right" href="{% url 'report_send' %}" role="button"><code><b>Contribute Results</b></code></a>
                         </li>
                         {% endif %}
+
+                        <li class="nav-item {% if url_name == 'faq' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'faq' %}">faq</a>
+                        </li>
 
                         <li class="nav-item {% if url_name == 'login' %}active{% endif %}">
                             <a class="nav-link" href="{% url 'login' %}">log in</a>
