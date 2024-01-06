@@ -86,7 +86,7 @@ eval rate:            1.69 tokens/s''',
             flags=re.MULTILINE | re.IGNORECASE | re.DOTALL,
         ),
         error_messages={
-            'invalid': 'please copy & paste the whole text output after ollama execution, run ollama with "--verbose" flag'
+            'invalid': 'Please copy & paste the whole text output after ollama execution, run ollama with "--verbose" flag.'
         },
         required=True,
     )
@@ -104,5 +104,5 @@ eval rate:            1.69 tokens/s''',
                     try:
                         value.encode('ascii')
                     except UnicodeEncodeError:
-                        raise forms.ValidationError('Please use only English characters')
+                        raise forms.ValidationError('Please use only English characters.')
         return cleaned_data
