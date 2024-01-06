@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import FormView
 
 from accounts.users import create_profile
@@ -30,18 +30,22 @@ def validate_profile_exists(dispatch_func):
 logger = logging.getLogger(__name__)
 
 
-class IndexPageView(TemplateView):
-    template_name = 'base/index.html'
+class IndexPageView(ListView):
+    template_name = 'report/list.html'
+    paginate_by = 25
 
     @validate_profile_exists
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.user.is_authenticated:
-            pass
-        return context
+    def get_queryset(self):
+        return PerformanceSnapshot.objects.all()
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     if self.request.user.is_authenticated:
+    #         pass
+    #     return context
 
 
 class ReportSendView(FormView):

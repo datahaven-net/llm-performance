@@ -138,16 +138,6 @@ class CustomPasswordResetForm(PasswordResetForm):
         return self.cleaned_data
 
 
-def encode_ascii_for_list_of_strings(values):
-    for value in values:
-        if isinstance(value, str):
-            try:
-                value.encode('ascii')
-            except UnicodeEncodeError:
-                raise forms.ValidationError('Please use only English characters.')
-    return
-
-
 class AccountProfileForm(models.ModelForm):
 
     class Meta:
@@ -164,5 +154,10 @@ class AccountProfileForm(models.ModelForm):
 
     def clean(self):
         cleaned_data = super(AccountProfileForm, self).clean()
-        encode_ascii_for_list_of_strings(cleaned_data.values())
+        for value in cleaned_data.values():
+            if isinstance(value, str):
+                try:
+                    value.encode('ascii')
+                except UnicodeEncodeError:
+                    raise forms.ValidationError('Please use only English characters.')
         return cleaned_data
