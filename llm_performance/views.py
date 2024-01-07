@@ -63,7 +63,6 @@ class PerformanceSnapshotTable(django_tables2.Table):
 
 class IndexPageView(django_tables2.SingleTableView):
     template_name = 'report/list.html'
-    queryset = PerformanceSnapshot.objects.all()
     table_class = PerformanceSnapshotTable
 
     @validate_profile_exists
@@ -71,7 +70,7 @@ class IndexPageView(django_tables2.SingleTableView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        return PerformanceSnapshot.objects.all()
+        return PerformanceSnapshot.objects.filter(approved=True)
 
 
 class ReportSendView(FormView):
