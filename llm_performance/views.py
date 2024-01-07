@@ -5,8 +5,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView
 from django.views.generic.edit import FormView
+
+import django_tables2
 
 from accounts.users import create_profile
 
@@ -30,9 +31,40 @@ def validate_profile_exists(dispatch_func):
     return dispatch_wrapper
 
 
-class IndexPageView(ListView):
+class PerformanceSnapshotTable(django_tables2.Table):
+
+    cpu = django_tables2.Column(verbose_name='CPU')
+    gpu = django_tables2.Column(verbose_name='GPU')
+    ram = django_tables2.Column(verbose_name='RAM')
+    vram = django_tables2.Column(verbose_name='VRAM')
+    prompt_eval_rate = django_tables2.Column(verbose_name='prompt eval rate')
+    eval_rate = django_tables2.Column(verbose_name='eval rate')
+    llm_model = django_tables2.Column(verbose_name='model name')
+    reporter = django_tables2.Column(verbose_name='reporter')
+
+    class Meta:
+        model = PerformanceSnapshot
+        template_name = "table/bootstrap4-responsive.html"
+        sequence = ('cpu', 'gpu', 'ram', 'vram', 'prompt_eval_rate', 'eval_rate', 'llm_model', 'reporter', )
+        exclude = ('timestamp', 'input', 'cpu_brand', 'gpu_brand', 'purchase_year', 'purchase_price',
+                   'total_duration', 'load_duration',
+                   'prompt_eval_count', 'prompt_eval_duration', 'eval_count', 'eval_duration',
+                   'approved', 'id', )
+
+    def render_ram(self, record):
+        return record.ram_formatted
+
+    def render_vram(self, record):
+        return record.vram_formatted
+
+    def render_reporter(self, record):
+        return record.reporter_formatted
+
+
+class IndexPageView(django_tables2.SingleTableView):
     template_name = 'report/list.html'
-    paginate_by = 25
+    queryset = PerformanceSnapshot.objects.all()
+    table_class = PerformanceSnapshotTable
 
     @validate_profile_exists
     def dispatch(self, request, *args, **kwargs):

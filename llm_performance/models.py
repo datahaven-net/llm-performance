@@ -70,7 +70,7 @@ class PerformanceSnapshot(models.Model):
     )
 
     purchase_price = models.IntegerField(
-        # US$ 1000 
+        # U.S. $ 1000 
         null=True,
         blank=True,
         default=None,
@@ -130,8 +130,12 @@ class PerformanceSnapshot(models.Model):
 
     @property
     def ram_formatted(self):
-        return self.ram + ' GB' if self.ram else ''
+        return '{} GB'.format(self.ram) if self.ram else ''
 
     @property
     def vram_formatted(self):
-        return self.vram + ' GB' if self.vram else ''
+        return '{} GB'.format(self.vram) if self.vram else ''
+
+    @property
+    def reporter_formatted(self):
+        return self.reporter.profile.person_name
