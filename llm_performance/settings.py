@@ -13,15 +13,14 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 #------------------------------------------------------------------------------
 
 import os
-import sys
 
 #------------------------------------------------------------------------------
 
 if os.environ.get('DOCKER_ENV'):
-    from llm_performance import params_docker as params  # @UnresolvedImport
+    from llm_performance import params_docker as params  # @UnresolvedImport @UnusedImport
 
 else:
-    from llm_performance import params  # @UnresolvedImport
+    from llm_performance import params  # @UnresolvedImport @Reimport
 
 #------------------------------------------------------------------------------
 
@@ -162,6 +161,8 @@ INSTALLED_APPS = [
     'bootstrap4',
     # useful things: https://django-extensions.readthedocs.io/en/latest/command_extensions.html
     'django_extensions',
+    # HTML Tables: https://django-tables2.readthedocs.io/en/latest/
+    'django_tables2',
     'logs',
     'accounts',
     'llm_performance',

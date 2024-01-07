@@ -17,6 +17,7 @@ django-extensions
 django_otp
 django-formtools
 django-dbbackup
+django-tables2
 
 pdfkit
 

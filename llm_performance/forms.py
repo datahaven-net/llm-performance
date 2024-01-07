@@ -27,7 +27,7 @@ class ReportSendForm(forms.Form):
     )
 
     ram = fields.IntegerField(
-        label='RAM size in Gigabytes:',
+        label='RAM size in Gigabytes (optional):',
         help_text='physical Random Access Memory size of your machine',
         min_value=1,
         required=False,
@@ -41,9 +41,25 @@ class ReportSendForm(forms.Form):
     )
 
     vram = fields.IntegerField(
-        label='VRAM size in Gigabytes:',
+        label='VRAM size in Gigabytes (optional):',
         help_text='Video Random Access Memory (GPU memory) size',
         min_value=1,
+        required=False,
+    )
+
+    purchase_year = fields.IntegerField(
+        label='year the system was purchased (optional):',
+        help_text='you can disclose here when you bought your computer',
+        min_value=1980,
+        max_value=2024,
+        required=False,
+    )
+
+    purchase_price = fields.IntegerField(
+        label='approximate price of your computer in U.S. $ (optional):',
+        help_text='you can also indicate the approximate price at the time of purchase',
+        min_value=1,
+        max_value=100000,
         required=False,
     )
 

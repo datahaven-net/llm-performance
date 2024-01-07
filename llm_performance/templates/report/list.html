@@ -1,6 +1,9 @@
 {% extends 'base/index.html' %}
 
 
+{% load django_tables2 %}
+
+
 {% block main_content %}
 
 
@@ -8,69 +11,13 @@
 
   <h3>some header here...</h3>
 
-    <div class="table-responsive">
+  <div class="table-responsive text-left">
 
-      <table class="table table-hover text-left">
-
-        <tr>
-            <th>CPU</th>
-            <th>RAM</th>
-            <th>GPU</th>
-            <th>VRAM</th>
-            <th>prompt eval rate</th>
-            <th>eval rate</th>
-            <th>model name</th>
-            <th>user name</th>
-        </tr>
-
-        {% for r in object_list %}
-
-        <tr>
-
-            <td>
-                {{ r.cpu }}
-            </td>
-
-            <td>
-                {{ r.ram }} GB
-            </td>
-
-            <td>
-                {{ r.gpu }}
-            </td>
-
-            <td>
-                {{ r.vram }} GB
-            </td>
-
-            <td>
-                {{ r.prompt_eval_rate }} tokens/s
-            </td>
-
-            <td>
-                {{ r.eval_rate }} tokens/s
-            </td>
-
-            <td>
-                {{ r.llm_model }}
-            </td>
-
-            <td>
-                {{ r.reporter.profile.person_name }}
-            </td>
-
-        </tr>
-
-        {% endfor %}
-
-    </table>
+  {% render_table table %}
 
   </div>
 
 </div>
-
-
-{% include 'base/pagination_class_based_views.html' %}
 
 
 {% endblock %}
