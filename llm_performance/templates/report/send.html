@@ -1,4 +1,4 @@
-{% extends 'base/container_sm_8.html' %}
+{% extends 'base/container_sm_12.html' %}
 
 {% block content %}
 
@@ -48,6 +48,19 @@
         </div>
         <div class="col-6">
           {% bootstrap_field form.vram layout="vertical" placeholder="4" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-6" %}
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="col-12">
+    <fieldset>
+      <div class="row">
+        <div class="col-6">
+          {% bootstrap_field form.purchase_year layout="vertical" placeholder="2020" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-6" %}
+        </div>
+        <div class="col-6">
+          {% bootstrap_field form.purchase_price layout="vertical" placeholder="700" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-6" %}
         </div>
       </div>
     </fieldset>

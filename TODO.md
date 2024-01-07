@@ -4,8 +4,8 @@
 + detect ollama model name from user input
 + detect CPU and GPU company name from user input
 + add optional input fields to provide how many GB of RAM with the CPU and how many GB of GPU memory user have
-- add optional input fields to ask user the year the system was purchased and approximate price then
-- display collected performance stats on the main page
++ add optional input fields to ask user the year the system was purchased and approximate price then
++ display collected performance stats on the main page
 - make possible to sort collected stats by different columns
 - make possible for admin to approve/reject performance records reported by users
 - make possible for admin to "trust" certain user and auto-approve all of his performance reports

@@ -61,6 +61,22 @@ class PerformanceSnapshot(models.Model):
         db_index=True,
     )
 
+    purchase_year = models.IntegerField(
+        # 2020
+        null=True,
+        blank=True,
+        default=None,
+        db_index=True,
+    )
+
+    purchase_price = models.IntegerField(
+        # US$ 1000 
+        null=True,
+        blank=True,
+        default=None,
+        db_index=True,
+    )
+
     total_duration = models.FloatField(
         # 5m19.747896821s
     )
@@ -111,3 +127,11 @@ class PerformanceSnapshot(models.Model):
         related_name='reports',
         db_index=True,
     )
+
+    @property
+    def ram_formatted(self):
+        return self.ram + ' GB' if self.ram else ''
+
+    @property
+    def vram_formatted(self):
+        return self.vram + ' GB' if self.vram else ''

@@ -120,6 +120,8 @@ class ReportSendView(FormView):
                 gpu=form.cleaned_data['gpu'],
                 gpu_brand=known_gpu_brand.upper(),
                 vram=form.cleaned_data['vram'],
+                purchase_year=form.cleaned_data['purchase_year'],
+                purchase_price=form.cleaned_data['purchase_price'],
                 total_duration=duration.from_str(m.group('total_duration')),
                 load_duration=duration.from_str(m.group('load_duration')),
                 prompt_eval_count=m.group('prompt_eval_count'),
