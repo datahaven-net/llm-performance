@@ -16,6 +16,7 @@ class PerformanceSnapshot(models.Model):
     )
 
     cpu = models.CharField(
+        # Intel(R) Core(TM) i7-6500U CPU @ 2.50GHz
         max_length=256,
         null=True,
         blank=True,
@@ -39,6 +40,7 @@ class PerformanceSnapshot(models.Model):
     )
 
     gpu = models.CharField(
+        # Intel Corporation Skylake GT2 [HD Graphics 520] (rev 07)
         max_length=256,
         null=True,
         blank=True,
@@ -75,6 +77,14 @@ class PerformanceSnapshot(models.Model):
         blank=True,
         default=None,
         db_index=True,
+    )
+
+    operating_system = models.CharField(
+        # Ubuntu 22.04.2 LTS
+        max_length=256,
+        null=True,
+        blank=True,
+        default=None,
     )
 
     total_duration = models.FloatField(

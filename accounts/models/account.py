@@ -83,11 +83,15 @@ class Account(AbstractUser):
         help_text='any note regarding this account'
     )
 
+    trusted = models.BooleanField(
+        default=False,
+    )
+
     def __str__(self):
-        return 'account({})'.format(self.email)
+        return 'account({}{})'.format(self.email, ':trusted' if self.trusted else '')
 
     def __repr__(self):
-        return 'account({})'.format(self.email)
+        return 'account({}{})'.format(self.email, ':trusted' if self.trusted else '')
 
     @property
     def username(self):

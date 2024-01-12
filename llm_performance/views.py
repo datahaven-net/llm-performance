@@ -153,6 +153,7 @@ class ReportSendView(FormView):
                 vram=form.cleaned_data['vram'],
                 purchase_year=form.cleaned_data['purchase_year'],
                 purchase_price=form.cleaned_data['purchase_price'],
+                operating_system=form.cleaned_data['operating_system'],
                 total_duration=duration.from_str(m.group('total_duration')),
                 load_duration=duration.from_str(m.group('load_duration')),
                 prompt_eval_count=m.group('prompt_eval_count'),
@@ -162,6 +163,7 @@ class ReportSendView(FormView):
                 eval_duration=duration.from_str(m.group('eval_duration')),
                 eval_rate=m.group('eval_rate'),
                 llm_model=m.group('llm_model'),
+                approved=self.request.user.trusted,
                 reporter=self.request.user,
             )
         except Exception as err:
@@ -169,5 +171,9 @@ class ReportSendView(FormView):
             form.add_error(None, 'Because of technical error your report was not submitted.')
             return super(ReportSendView, self).form_invalid(form)
 
-        messages.success(self.request, 'Report successfilly submitted. We will review your submission and soon update gathered statistics. Thank you for cooperation.')
+        if self.request.user.trusted:
+            messages.success(self.request, 'Report successfilly submitted. Thank you for cooperation.')
+        else:
+            messages.success(self.request, 'Report successfilly submitted. We will review your submission and soon update gathered statistics. Thank you for cooperation.')
+
         return super(ReportSendView, self).form_valid(form)

@@ -56,10 +56,17 @@ class ReportSendForm(forms.Form):
     )
 
     purchase_price = fields.IntegerField(
-        label='approximate price of your computer in U.S. $ (optional):',
+        label='approximate price in U.S. $ (optional):',
         help_text='you can also indicate the approximate price at the time of purchase',
         min_value=1,
         max_value=100000,
+        required=False,
+    )
+
+    operating_system = fields.CharField(
+        label='operating system (optional):',
+        help_text='description of your operation system',
+        max_length=256,
         required=False,
     )
 
