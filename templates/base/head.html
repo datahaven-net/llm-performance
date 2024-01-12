@@ -15,7 +15,9 @@
 
     <link href="{% static 'vendor/bootstrap/css/bootstrap.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet" type="text/css">
+    
+    <!-- <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet" type="text/css"> -->
+    
     {% if recaptcha_site_key %}
         <script src='https://www.recaptcha.net/recaptcha/api.js'></script>
     {% endif %}
@@ -44,7 +46,10 @@
 <body>
 <header>
     <nav class="navbar navbar-expand-md navbar-light bg-white static-top">
-        <!-- <a class="navbar-brand" href="/">LLM performance</a> -->
+        <a class="navbar-brand" href="/" style="font-size: 28px">
+            <img src="/static/images/llm_performance.png" width="32" height="32" alt="">
+            performance
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -52,9 +57,11 @@
             {% with url_name=request.resolver_match.url_name %}
                 {% if request.user.is_authenticated %}
                     <ul class="navbar-nav mr-auto">
+                        <!-- 
                         <li class="nav-item {% if url_name == 'index' %}active{% endif %}">
 					        <a class="nav-link" href="{% url 'index' %}">LLM Performance</a>
                         </li>
+                        -->
                     </ul>
                     <ul class="navbar-nav">
                         {% if url_name != 'report_send' %}
@@ -93,9 +100,11 @@
                     </ul>
                 {% else %}
                     <ul class="navbar-nav mr-auto">
+                        <!-- 
                         <li class="nav-item {% if url_name == 'index' %}active{% endif %}">
 					        <a class="nav-link" href="{% url 'index' %}">LLM Performance</a>
                         </li>
+                        -->
                     </ul>
                     <ul class="navbar-nav">
                         {% if url_name != 'report_send' %}
