@@ -168,6 +168,12 @@ INSTALLED_APPS = [
     'llm_performance',
 ]
 
+# TODO: add protection
+# https://github.com/anuragrana/django-bot-crawler-blocker
+# https://github.com/jazzband/django-axes
+# https://forum.djangoproject.com/t/is-there-a-fail2ban-technique-or-similar-feature-for-django/16492
+
+
 MIDDLEWARE = [
     'logs.middleware.LogRequestsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

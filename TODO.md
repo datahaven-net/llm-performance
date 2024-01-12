@@ -8,12 +8,12 @@
 + display collected performance stats on the main page
 + make possible to sort collected stats by different columns
 + make possible for admin to approve/reject performance records reported by users
-- make possible for admin to "trust" certain user and auto-approve all of his performance reports
++ make possible for admin to "trust" certain user and auto-approve all of his performance reports
 - make possible for admin to add test inputs and let users use those inputs
-- record in the DB the date and time a result is submitted by user
-- add optional input field to provide operating system info
++ record in the DB the date and time a result is submitted by user
++ add optional input field to provide operating system info
 - store latest user input in cookies and auto-populate cpu,gpu,ram,vram and other fields on next report
-- change favicon.ico
++ change favicon.ico
 - add confirmation button before sending the report and also text stating about data privacy
 - add standard text that people submit to models on the site and also "copy to clipboard" button for that
 - provide instructions to users how to learn CPU and GPU model name on different platforms

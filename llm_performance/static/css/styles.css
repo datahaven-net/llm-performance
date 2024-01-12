@@ -1,2 +1,5 @@
-/* Hi there */
-
+tr.grp-row td.field-get_approve_reject_links {
+    padding-top: 3px;
+    padding-bottom: 5px;
+    vertical-align: middle;
+}

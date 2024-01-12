@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, reverse
-from django.utils.safestring import mark_safe
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.http import HttpResponseRedirect
 
 from nested_admin import NestedModelAdmin  # @UnresolvedImport
@@ -25,13 +25,18 @@ reject_snapshot.short_description = 'Reject'
 
 class PerformanceSnapshotAdmin(NestedModelAdmin):
 
+    class Media:
+        css = {
+            'all': ('css/styles.css', )
+        }
+
     fields = (
         ('get_reporter_link', ),
         ('approved', ),
         ('cpu', ),
         ('gpu', ),
         ('ram', 'vram', ),
-        ('purchase_year', 'purchase_price', ),
+        ('operating_system', 'purchase_year', 'purchase_price', ),
         ('total_duration', 'load_duration', ),
         ('prompt_eval_count', 'prompt_eval_duration', 'prompt_eval_rate', ),
         ('eval_count', 'eval_duration', 'eval_rate', ),
@@ -40,7 +45,8 @@ class PerformanceSnapshotAdmin(NestedModelAdmin):
     )
 
     list_display = (
-        'timestamp', 'cpu_brand', 'ram', 'gpu_brand', 'vram', 'purchase_year', 'purchase_price',
+        'timestamp', 'cpu_brand', 'ram', 'gpu_brand', 'vram',
+        'operating_system', 'purchase_year', 'purchase_price',
         'total_duration', 'load_duration',
         'prompt_eval_count', 'prompt_eval_duration', 'prompt_eval_rate',
         'eval_count', 'eval_duration', 'eval_rate',
@@ -54,7 +60,7 @@ class PerformanceSnapshotAdmin(NestedModelAdmin):
     actions = [approve_snapshot, reject_snapshot, ]
 
     def get_reporter_link(self, instance):
-        link = reverse("admin:accounts_account_change", args=[instance.reporter.pk])
+        link = '{}?q={}'.format(reverse("admin:accounts_account_changelist"), instance.reporter.email)
         return mark_safe(f'<a href="{link}">{instance.reporter.profile.person_name}</a>')
     get_reporter_link.short_description = 'Reporter'
 
