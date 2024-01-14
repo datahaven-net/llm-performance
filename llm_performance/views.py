@@ -37,6 +37,7 @@ class PerformanceSnapshotTable(django_tables2.Table):
     gpu = django_tables2.Column(verbose_name='GPU')
     ram = django_tables2.Column(verbose_name='RAM')
     vram = django_tables2.Column(verbose_name='VRAM')
+    operating_system = django_tables2.Column(verbose_name='operating system')
     prompt_eval_rate = django_tables2.Column(verbose_name='prompt eval rate')
     eval_rate = django_tables2.Column(verbose_name='eval rate')
     llm_model = django_tables2.Column(verbose_name='model name')
@@ -45,7 +46,7 @@ class PerformanceSnapshotTable(django_tables2.Table):
     class Meta:
         model = PerformanceSnapshot
         template_name = "table/bootstrap4-responsive.html"
-        sequence = ('cpu', 'gpu', 'ram', 'vram', 'prompt_eval_rate', 'eval_rate', 'llm_model', 'reporter', )
+        sequence = ('cpu', 'gpu', 'ram', 'vram', 'operating_system', 'prompt_eval_rate', 'eval_rate', 'llm_model', 'reporter', )
         exclude = ('timestamp', 'input', 'cpu_brand', 'gpu_brand', 'purchase_year', 'purchase_price',
                    'total_duration', 'load_duration',
                    'prompt_eval_count', 'prompt_eval_duration', 'eval_count', 'eval_duration',
@@ -87,6 +88,18 @@ class ReportSendView(FormView):
         kwargs = FormView.get_form_kwargs(self)
         kwargs['initial']['name'] = self.request.user.profile.person_name
         kwargs['initial']['email'] = self.request.user.email
+        last_report = PerformanceSnapshot.objects.filter(
+            reporter=self.request.user,
+            approved=True,
+        ).last()
+        if last_report:
+            kwargs['initial']['cpu'] = last_report.cpu
+            kwargs['initial']['ram'] = last_report.ram
+            kwargs['initial']['gpu'] = last_report.gpu
+            kwargs['initial']['vram'] = last_report.vram
+            kwargs['initial']['purchase_year'] = last_report.purchase_year
+            kwargs['initial']['purchase_price'] = last_report.purchase_price
+            kwargs['initial']['operating_system'] = last_report.operating_system
         return kwargs
 
     def form_valid(self, form):
