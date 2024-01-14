@@ -3,3 +3,17 @@ tr.grp-row td.field-get_approve_reject_links {
     padding-bottom: 5px;
     vertical-align: middle;
 }
+
+.copy-button {
+  position: absolute;
+  right: 30px;
+  cursor: pointer;
+  color: #fff;
+  background: gray;
+  border-radius: 0.5em;
+  padding: 2px 7px;
+}
+
+.copy-button:hover{
+  color: #000;
+}

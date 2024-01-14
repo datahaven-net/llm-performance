@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic.edit import FormView
+from django.views.generic import FormView, TemplateView
 
 import django_tables2
 
@@ -177,3 +177,15 @@ class ReportSendView(FormView):
             messages.success(self.request, 'Report successfilly submitted. We will review your submission and soon update gathered statistics. Thank you for cooperation.')
 
         return super(ReportSendView, self).form_valid(form)
+
+
+class ReportPrepareView(TemplateView):
+    template_name = 'report/prepare.html'
+
+    @validate_profile_exists
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context

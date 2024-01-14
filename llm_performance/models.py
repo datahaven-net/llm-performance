@@ -120,7 +120,7 @@ class PerformanceSnapshot(models.Model):
     )
 
     llm_model = models.CharField(
-        max_length=16,
+        max_length=128,
         null=True,
         blank=True,
         default=None,
