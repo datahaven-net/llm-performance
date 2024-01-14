@@ -64,11 +64,14 @@
                         -->
                     </ul>
                     <ul class="navbar-nav">
-                        {% if url_name != 'report_send' %}
-                        <li class="nav-item">
+
+                        <li class="nav-item {% if url_name == 'report_prepare' %}active{% endif %}">
+                            <a class="btn btn-success btn-margin-right" href="{% url 'report_prepare' %}" role="button"><code><b>Prepare Your Report</b></code></a>
+                        </li>
+
+                        <li class="nav-item {% if url_name == 'report_send' %}active{% endif %}">
                             <a class="btn btn-success btn-margin-right" href="{% url 'report_send' %}" role="button"><code><b>Contribute Results</b></code></a>
                         </li>
-                        {% endif %}
 
                         <li class="nav-item {% if url_name == 'faq' %}active{% endif %}">
                             <a class="nav-link" href="{% url 'faq' %}">faq</a>
@@ -107,11 +110,14 @@
                         -->
                     </ul>
                     <ul class="navbar-nav">
-                        {% if url_name != 'report_send' %}
-                        <li class="nav-item">
+
+                        <li class="nav-item {% if url_name == 'report_prepare' %}active{% endif %}">
+                            <a class="btn btn-success btn-margin-right" href="{% url 'report_prepare' %}" role="button"><code><b>Prepare Your Report</b></code></a>
+                        </li>
+
+                        <li class="nav-item {% if url_name == 'report_send' %}active{% endif %}">
                             <a class="btn btn-success btn-margin-right" href="{% url 'report_send' %}" role="button"><code><b>Contribute Results</b></code></a>
                         </li>
-                        {% endif %}
 
                         <li class="nav-item {% if url_name == 'faq' %}active{% endif %}">
                             <a class="nav-link" href="{% url 'faq' %}">faq</a>

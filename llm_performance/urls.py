@@ -54,6 +54,7 @@ auth_patterns = [
 ]
 
 patterns = [
+    path('report/prepare/', llm_performance_views.ReportPrepareView.as_view(), name='report_prepare'),
     path('report/send/', llm_performance_views.ReportSendView.as_view(), name='report_send'),
     path('faq/', TemplateView.as_view(template_name='faq/faq_page.html'), name='faq'),
     path('', llm_performance_views.IndexPageView.as_view(), name='index'),
