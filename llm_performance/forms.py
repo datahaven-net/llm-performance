@@ -114,11 +114,6 @@ eval rate:            1.69 tokens/s''',
         required=True,
     )
 
-    duplicate = fields.BooleanField(
-        label='send me a copy of this report',
-        initial=True,
-    )
-
     def clean(self):
         cleaned_data = super(ReportSendForm, self).clean()
         for name, value in cleaned_data.items():
