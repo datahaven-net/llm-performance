@@ -84,6 +84,17 @@ class ReportSendView(FormView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        last_report = PerformanceSnapshot.objects.filter(
+            reporter=self.request.user,
+            approved=True,
+        ).last()
+        if last_report:
+            context['cpu_initial_value'] = last_report.cpu
+            context['gpu_initial_value'] = last_report.gpu
+        return context
+
     def get_form_kwargs(self):
         kwargs = FormView.get_form_kwargs(self)
         kwargs['initial']['name'] = self.request.user.profile.person_name
@@ -93,9 +104,7 @@ class ReportSendView(FormView):
             approved=True,
         ).last()
         if last_report:
-            kwargs['initial']['cpu'] = last_report.cpu
             kwargs['initial']['ram'] = last_report.ram
-            kwargs['initial']['gpu'] = last_report.gpu
             kwargs['initial']['vram'] = last_report.vram
             kwargs['initial']['purchase_year'] = last_report.purchase_year
             kwargs['initial']['purchase_price'] = last_report.purchase_price

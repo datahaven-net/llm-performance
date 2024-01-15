@@ -15,70 +15,183 @@
 <div class="row">
 
   <div class="col-12">
+
     <fieldset>
 	  <div class="row">
+
         <div class="col-6">
           {% bootstrap_field form.name layout="vertical" placeholder="" size="small" label_class="form-label col-sm-6 text-left" horizontal_field_class="col-sm-6" %}
         </div>
+
         <div class="col-6">
           {% bootstrap_field form.email layout="vertical" placeholder="" size="small" label_class="form-label col-sm-6 text-left" horizontal_field_class="col-sm-6" %}
         </div>
+
       </div>
     </fieldset>
+
   </div>
 
   <div class="col-12">
+
     <fieldset>
       <div class="row">
-        <div class="col-6">
-          {% bootstrap_field form.cpu layout="vertical" placeholder="Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-6" %}
+
+        <div class="col-6" id="input_cpu">
+          <div class="form-group">
+            <label class="form-label col-sm-12 text-left" for="id_cpu">CPU model name:</label>
+            <div class="input-group">
+	          <input type="text" name="cpu" value="{{ cpu_initial_value }}" maxlength="256" class="form-control form-control-sm" placeholder="Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz" title="enter full model name of your Central Processor Unit" required="" id="id_cpu">
+              <div class="input-group-append">
+                <button class="btn btn-sm btn-info" type="button" data-toggle="collapse" data-target="#input_cpu_collapse" aria-expanded="false" aria-controls="input_cpu_collapse">?</button>
+              </div>
+            </div>
+	        <small class="form-text text-muted">enter full model name of your Central Processor Unit</small>
+
+	        <div class="collapse" id="input_cpu_collapse">
+              <br/>
+              <div class="card card-body p-2">
+				<ul class="nav nav-pills" id="cpuTab" role="tablist">
+				  <li class="nav-item">
+				    <a class="nav-link p-1 active" id="cpu-windows-tab" data-toggle="tab" href="#cpu_windows" role="tab" aria-controls="cpu_windows" aria-selected="true">Windows (via cmd.exe)</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link p-1" id="cpu-linux-tab" data-toggle="tab" href="#cpu_linux" role="tab" aria-controls="cpu_linux" aria-selected="false">Linux</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link p-1" id="cpu-macos-tab" data-toggle="tab" href="#cpu_macos" role="tab" aria-controls="cpu_macos" aria-selected="false">MacOS</a>
+				  </li>
+				</ul>
+                <br/>
+                <br/>
+				<div class="tab-content" id="cpuTabContent">
+				  <div class="tab-pane fade show active" id="cpu_windows" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="p-2 bg-light">
+				      <font size=-1><code id="cpu_windows_copy" class="text-left" style="display: block; width: 100%;">wmic cpu get name</code></font>
+				    </div>
+				  </div>
+				  <div class="tab-pane fade" id="cpu_linux" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="p-2 bg-light">
+                      <font size=-1><code id="cpu_linux_copy" class="text-left" style="display: block; width: 100%;">lscpu | grep "Model name:"</code></font>
+                    </div>
+                  </div>
+				  <div class="tab-pane fade" id="cpu_macos" role="tabpanel" aria-labelledby="contact-tab">
+                    <div class="p-2 bg-light">
+                      <font size=-1><code id="cpu_macos_copy" class="text-left" style="display: block; width: 100%;">sysctl -a | grep machdep.cpu.brand_string:</code></font>
+	                </div>
+				  </div>
+				</div>
+
+	          </div>
+              <br />
+	        </div>
+
+          </div>
         </div>
-        <div class="col-6">
+
+        <div class="col-6" id="input_ram">
           {% bootstrap_field form.ram layout="vertical" placeholder="16" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-6" %}
         </div>
+
       </div>
     </fieldset>
+
   </div>
 
   <div class="col-12">
+
     <fieldset>
       <div class="row">
-        <div class="col-6">
-          {% bootstrap_field form.gpu layout="vertical" placeholder="AMD Radeon Pro 5300M" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-6" %}
+
+        <div class="col-6" id="input_gpu">
+          <div class="form-group">
+            <label class="form-label col-sm-12 text-left" for="id_gpu">GPU model name:</label>
+            <div class="input-group">
+              <input type="text" name="gpu" value="{{ gpu_initial_value }}" maxlength="256" class="form-control form-control-sm" placeholder="AMD Radeon Pro 5300M" title="details about your Graphics Processing Unit model" required="" id="id_gpu">
+   			  <div class="input-group-append">
+                <button class="btn btn-sm btn-info" type="button" data-toggle="collapse" data-target="#input_gpu_collapse" aria-expanded="false" aria-controls="input_gpu_collapse">?</button>
+			  </div>
+			</div>
+            <small class="form-text text-muted">details about your Graphics Processing Unit model</small>
+
+            <div class="collapse" id="input_gpu_collapse">
+              <br/>
+              <div class="card card-body p-2">
+                <ul class="nav nav-pills" id="gpuTab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link p-1 active" id="gpu-windows-tab" data-toggle="tab" href="#gpu_windows" role="tab" aria-controls="gpu_windows" aria-selected="true">Windows (via cmd.exe)</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link p-1" id="gpu-linux-tab" data-toggle="tab" href="#gpu_linux" role="tab" aria-controls="gpu_linux" aria-selected="false">Linux</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link p-1" id="gpu-macos-tab" data-toggle="tab" href="#gpu_macos" role="tab" aria-controls="gpu_macos" aria-selected="false">MacOS</a>
+                  </li>
+                </ul>
+                <br/>
+                <br/>
+                <div class="tab-content" id="gpuTabContent">
+                  <div class="tab-pane fade show active" id="gpu_windows" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="p-2 bg-light">
+                      <font size=-1><code id="gpu_windows_copy" class="text-left" style="display: block; width: 100%;">wmic path win32_VideoController get name</code></font>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="gpu_linux" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="p-2 bg-light">
+                      <font size=-1><code id="gpu_linux_copy" class="text-left" style="display: block; width: 100%;">lspci | grep ' VGA '</code></font>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="gpu_macos" role="tabpanel" aria-labelledby="contact-tab">
+                    <div class="p-2 bg-light">
+                      <font size=-1><code id="gpu_macos_copy" class="text-left" style="display: block; width: 100%;">system_profiler SPDisplaysDataType | grep 'Chipset Model:'</code></font>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <br />
+            </div>
+
+          </div>
         </div>
-        <div class="col-6">
+
+        <div class="col-6" id="input_vram">
           {% bootstrap_field form.vram layout="vertical" placeholder="4" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-6" %}
         </div>
+
       </div>
     </fieldset>
+
   </div>
 
   <div class="col-12">
+
     <fieldset>
       <div class="row">
-        <div class="col-4">
+
+        <div class="col-4" id="input_os">
           {% bootstrap_field form.operating_system layout="vertical" placeholder="Ubuntu 22.04.2 LTS" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-4" %}
         </div>
+
         <div class="col-4">
           {% bootstrap_field form.purchase_year layout="vertical" placeholder="2020" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-4" %}
         </div>
+
         <div class="col-4">
           {% bootstrap_field form.purchase_price layout="vertical" placeholder="700" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-4" %}
         </div>
+
       </div>
     </fieldset>
+
   </div>
 
   <div class="col-12">
+
     <fieldset>
       {% bootstrap_field form.message layout="vertical" placeholder="" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-12" %}
     </fieldset>
-  </div>
 
-  <div class="col-12">
-    <fieldset>
-      {% bootstrap_field form.duplicate layout="horizontal" placeholder="" size="small" label_class="form-label col-sm-4 text-center" horizontal_field_class="col-sm-8" %}
-    </fieldset>
   </div>
 
   <div class="col-12">
@@ -88,7 +201,7 @@
   <div class="col-12" style="line-height: 80%;">
     <font size=-1>
     For the purposes of maintaining and developing the www.llmperformance.ai web site, we do not require your personal information,
-    except for your email address. We do not publish your email address to third parties
+    except for your e-mail address. We do not publish your e-mail address to third parties
     and do not use it for our own benefit in any way.
     Please note that here we collect the necessary information that you voluntarily provide in this form.
     This data will be checked and processed by us. We reserve the right to change the information we receive
@@ -102,5 +215,41 @@
 </div>
 
 </form>
+
+
+<script>
+
+function add_copy_button(tag_name) {
+    const elem = document.getElementById(tag_name);
+    const copyButton = document.createElement("span");
+    copyButton.innerText = "Copy";
+    copyButton.classList.add("copy-button");
+    elem.appendChild(copyButton);
+
+    copyButton.addEventListener("click", () => {
+
+        const elem = document.getElementById(tag_name);
+        navigator.clipboard.writeText($(elem).contents().get(0).nodeValue.trim());
+
+        copyButton.style.display = "none";
+        copyButton.innerText = "Copied!";
+
+        setTimeout(function() {
+            copyButton.innerText = "Copy";
+        }, 2000);
+
+        copyButton.style.display = "inline";
+    });
+}
+
+add_copy_button("cpu_windows_copy");
+add_copy_button("cpu_linux_copy");
+add_copy_button("cpu_macos_copy");
+add_copy_button("gpu_windows_copy");
+add_copy_button("gpu_linux_copy");
+add_copy_button("gpu_macos_copy");
+
+</script>
+
 
 {% endblock %}

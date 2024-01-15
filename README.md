@@ -349,7 +349,7 @@ Linux:
 
 MacOS:
 
-        system_profiler SPDisplaysDataTypes
+        system_profiler SPDisplaysDataType | grep 'Chipset Model:'
 
 
 Windows (via cmd.exe):
