@@ -26,6 +26,14 @@ class ReportSendForm(forms.Form):
         required=True,
     )
 
+    cpu_cores = fields.IntegerField(
+        label='number of cores (optional):',
+        help_text='enter number of cores in your CPU',
+        min_value=1,
+        max_value=256,
+        required=False,
+    )
+
     ram = fields.IntegerField(
         label='RAM size in Gigabytes (optional):',
         help_text='physical Random Access Memory size of your machine',

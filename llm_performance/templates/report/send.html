@@ -89,29 +89,15 @@
           </div>
         </div>
 
-        <div class="col-6" id="input_ram">
-          {% bootstrap_field form.ram layout="vertical" placeholder="16" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-6" %}
-        </div>
-
-      </div>
-    </fieldset>
-
-  </div>
-
-  <div class="col-12">
-
-    <fieldset>
-      <div class="row">
-
         <div class="col-6" id="input_gpu">
           <div class="form-group">
             <label class="form-label col-sm-12 text-left" for="id_gpu">GPU model name:</label>
             <div class="input-group">
               <input type="text" name="gpu" value="{{ gpu_initial_value }}" maxlength="256" class="form-control form-control-sm" placeholder="AMD Radeon Pro 5300M" title="details about your Graphics Processing Unit model" required="" id="id_gpu">
-   			  <div class="input-group-append">
+              <div class="input-group-append">
                 <button class="btn btn-sm btn-info" type="button" data-toggle="collapse" data-target="#input_gpu_collapse" aria-expanded="false" aria-controls="input_gpu_collapse">?</button>
-			  </div>
-			</div>
+              </div>
+            </div>
             <small class="form-text text-muted">details about your Graphics Processing Unit model</small>
 
             <div class="collapse" id="input_gpu_collapse">
@@ -155,7 +141,25 @@
           </div>
         </div>
 
-        <div class="col-6" id="input_vram">
+      </div>
+    </fieldset>
+
+  </div>
+
+  <div class="col-12">
+
+    <fieldset>
+      <div class="row">
+
+        <div class="col-4" id="input_cpu_cores">
+          {% bootstrap_field form.cpu_cores layout="vertical" placeholder="8" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-6" %}
+        </div>
+
+        <div class="col-4" id="input_ram">
+          {% bootstrap_field form.ram layout="vertical" placeholder="16" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-6" %}
+        </div>
+
+        <div class="col-4" id="input_vram">
           {% bootstrap_field form.vram layout="vertical" placeholder="4" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-6" %}
         </div>
 
@@ -168,7 +172,6 @@
 
     <fieldset>
       <div class="row">
-
         <div class="col-4" id="input_os">
           {% bootstrap_field form.operating_system layout="vertical" placeholder="Ubuntu 22.04.2 LTS" size="small" label_class="form-label col-sm-12 text-left" horizontal_field_class="col-sm-4" %}
         </div>

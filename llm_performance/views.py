@@ -34,6 +34,7 @@ def validate_profile_exists(dispatch_func):
 class PerformanceSnapshotTable(django_tables2.Table):
 
     cpu = django_tables2.Column(verbose_name='CPU')
+    cpu_cores = django_tables2.Column(verbose_name='cores')
     gpu = django_tables2.Column(verbose_name='GPU')
     ram = django_tables2.Column(verbose_name='RAM')
     vram = django_tables2.Column(verbose_name='VRAM')
@@ -46,7 +47,8 @@ class PerformanceSnapshotTable(django_tables2.Table):
     class Meta:
         model = PerformanceSnapshot
         template_name = "table/bootstrap4-responsive.html"
-        sequence = ('cpu', 'gpu', 'ram', 'vram', 'operating_system', 'prompt_eval_rate', 'eval_rate', 'llm_model', 'reporter', )
+        sequence = ('cpu', 'cpu_cores', 'gpu', 'ram', 'vram', 'operating_system',
+                    'prompt_eval_rate', 'eval_rate', 'llm_model', 'reporter', )
         exclude = ('timestamp', 'input', 'cpu_brand', 'gpu_brand', 'purchase_year', 'purchase_price',
                    'total_duration', 'load_duration',
                    'prompt_eval_count', 'prompt_eval_duration', 'eval_count', 'eval_duration',
@@ -104,6 +106,7 @@ class ReportSendView(FormView):
             approved=True,
         ).last()
         if last_report:
+            kwargs['initial']['cpu_cores'] = last_report.cpu_cores
             kwargs['initial']['ram'] = last_report.ram
             kwargs['initial']['vram'] = last_report.vram
             kwargs['initial']['purchase_year'] = last_report.purchase_year
@@ -169,6 +172,7 @@ class ReportSendView(FormView):
                 input=form.cleaned_data['message'],
                 cpu=form.cleaned_data['cpu'],
                 cpu_brand=known_cpu_brand.upper(),
+                cpu_cores=form.cleaned_data['cpu_cores'],
                 ram=form.cleaned_data['ram'],
                 gpu=form.cleaned_data['gpu'],
                 gpu_brand=known_gpu_brand.upper(),
