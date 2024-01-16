@@ -31,6 +31,14 @@ class PerformanceSnapshot(models.Model):
         db_index=True,
     )
 
+    cpu_cores = models.IntegerField(
+        # 12
+        null=True,
+        blank=True,
+        default=None,
+        db_index=True,
+    )
+
     ram = models.IntegerField(
         # 16 GB
         null=True,
