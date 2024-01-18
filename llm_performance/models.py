@@ -157,3 +157,18 @@ class PerformanceSnapshot(models.Model):
     @property
     def reporter_formatted(self):
         return self.reporter.profile.person_name
+
+
+class SampleInput(models.Model):
+
+    text = models.TextField(
+        db_index=False,
+    )
+
+    llm_model = models.CharField(
+        max_length=128,
+        null=True,
+        blank=True,
+        default=None,
+        db_index=True,
+    )

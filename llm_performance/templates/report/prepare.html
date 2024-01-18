@@ -83,107 +83,30 @@
 
     <div class="card">
         <div class="card-header">
-            <b>4.</b> copy our text sample and paste it into the ollama prompt
+            <b>4.</b> use sample text input and start your test
         </div>
         <div class="card-body">
+            <p>
+                Copy one of the text samples bellow - depending on your selected ollama model.
+                <br>
+                Paste selected text it into the ollama prompt and then hit "Enter" to start... It may take a while to get a response.
+            </p>
+ 
+        {% for sample in object_list %}
 
-            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseTextSample" aria-expanded="false" aria-controls="collapseTextSample">
-	            Show sample text
+            <br />
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseTextSample{{ sample.id }}" aria-expanded="false" aria-controls="collapseTextSample{{ sample.id }}">
+	            {{ sample.llm_model }}
 	        </button>
             <br />
-            <br />
-			<div class="collapse" id="collapseTextSample">
+			<div class="collapse" id="collapseTextSample{{ sample.id }}">
                 <div class="card card-body">
-                    <font size="-1"><pre id="clipboard3" class="text-left" style="display: block; width: 100%;">
-I would like you to write a document asking for donations for
-MIA, which stands for Missions to Interstellar Asteroids  
-
-As far as we currently know, all life or intelligence in the universe is located on Earth.  
-It would be nice to see some life headed far away from Earth.  
-However, we don't really have the tech to do that now.
-The key MIA idea is to send off a minimal probe to a passing interstellar asteroid
-with near current tech and then
-to transmit upgraded tech to it over the coming years.  With enough upgrades it could
-get to where it could survive the long journey to some distant star system and spread life there.
-
-An interstellar asteroid already has a huge amount of resources heading out of our solar system.
-If a probe could use these it could have plenty of material to make spare parts and new things during its long
-journey.
-There have been 2 interstellar asteroids that we know of that pass through our solar system in the last decade.
-
-As we get better telescopes I expect we will see interstellar asteroids even more often.
-The MIA mission is to send probes to such passing
-asteroids from time to time.
-
-The interstellar asteroids we have seen so far, and expect to see in the future, are moving at
-speeds such that it will take them thousands of years to get to another star system.   If civilization
-on Earth is not destroyed, they will make newer probes that pass these interstellar asteroids and
-get to the other star systems long before they do.  By the time the asteroid based probes reach there will be
-millions of people at their destination, if all goes well.  So these probes will pose no danger to
-humans if all goes well.  If something destroys all life on Earth, these probes might be the only
-chance of life in the Universe.  
-
-The machines in the probes would have AI.   Although AGI (Artificial General Intelligence)
-may not be available at the time of launch, the probe could likely be upgraded to incorporate
-AGI at a later stage.  
-
-Initially power could come from an RTG (radioisotope thermoelectric generator).  
-We might use Americium-241 as it has a half-life of around 432 years and the radiation is not too hard to shield.
-The Voyager probes RTGs have lasted more than 50 years, with careful design we believe a 200+ year
-usable life target is reasonable.
-This would give plenty of time to develop a replacement power source.
-Depending on what is found on the asteroid and what
-tech comes along on Earth a fusion or fission reactor could eventually be built on the asteroid.
-
-It seems that Direct Fusion Drive (DFD) nuclear-fusion rocket engines might be available
-on a time frame that fits with this project.   If so, they could be ideal for this project.
-It is a very high ISP rocket and could get the probe to the speeds needed to land on an
-interstellar asteroid.
-
-The machines would dig tunnels in the asteroid and brace them with something made from asteroid materials.
-Once built they would spend most of their time inside these tunnels to avoid radiation,
-limit temperature fluctuation, and minimize risk of being hit by micrometeoroids.
-
-The initial system would need to be able to refine materials from the asteroid and use a
-3D printer to make things.   Later, instructions could be sent for making all sorts of things.
-
-The reusable and huge SpaceX StarShip will soon greatly reduce the cost of getting things to space.
-So much larger space projects will be feasible soon.
-
-One of the first things to be made from asteroid materials would be a large antenna to communicate
-back to Earth at a higher data-rate.
-
-Some things, like computer chips, would not be manufactured on the asteroid for a long time,
-so many spare chips would be included in the original cargo.
-
-It might be possible someday to send tech on how to make seeds for plants starting with digital
-information.   So while it will not launch with any biological life, it may be possible
- to seed planets with organic life.  It will carry DNA information for a variety of life.
-So this might spread both organic life and AI life.
-
-Eventually it would be possible to make everything needed to replace anything needed for the mission.
-Once achieved, the mission could survive until it reaches another star system.
-With data scrubbing and unlimited spare parts the mission could last over 1,000 years.
-
-Some tech will advance naturally without any work by MIA over the coming years.
-Some tech would not be developed till after the probe has been launched and then transmitted later.
-However, some tech would need to be developed by MIA to enable this project,
-and that is what we will focus on.
-
-Before there is enough funds raised to start work on the probes funds will be used to create
-prizes, similar to the Xprizes, for accomplishments of tech useful for this project.
-
-Please write a two page, or longer, proposal seeking donations from the general public to support MIA.  Give th
-e motivation,
-the reasoning, estimates for the time-frame, the yearly cost, the manpower needed, and the key technical areas
-
-that MIA would have to develop, possible prizes, etc.   Feel free to ignore
-anything above or add any related ideas as long as you keep the key idea of sending probes to passing
-interstellar asteroids.  Do include that the MIA website is at http://mia.voyage
-
-                    </pre></font>
+                    <font size="-1"><pre id="clipboardTextSample{{ sample.id }}" class="text-left" style="display: block; width: 100%;">{{ sample.text }}</pre></font>
                 </div>
 			</div>
+
+		{% endfor %}
+
         </div>
     </div>
 
@@ -265,7 +188,11 @@ add_copy_button("clipboard1");
 
 add_copy_button("clipboard2");
 
-add_copy_button("clipboard3");
+{% for sample in object_list %}
+
+add_copy_button("clipboardTextSample{{ sample.id }}");
+
+{% endfor %}
 
 </script>
 
