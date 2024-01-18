@@ -20,7 +20,7 @@
 
 + make possible for admin to "trust" certain user and auto-approve all of his performance reports
 
-- make possible for admin to add test inputs and let users use those inputs
+- make possible for admin to add and modify test inputs and let users copy those inputs to clipboard
 
 - make possible for admin to modify FAQ page via Django Admin
 

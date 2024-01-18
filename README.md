@@ -319,39 +319,3 @@ Please cooperate with the community to make your changes Approved and Merged int
 
         git pull upstream master
         git push origin master
-
-
-
-### Gather info about your CPU
-
-Linux:
-
-        lscpu | grep "Model name:"
-
-
-MacOS:
-
-        sysctl -a | grep machdep.cpu.brand_string:
-
-
-Windows (via cmd.exe):
-
-        wmic cpu get name
-
-
-
-### Gather info about your GPU
-
-Linux:
-
-        lspci | grep ' VGA '
-
-
-MacOS:
-
-        system_profiler SPDisplaysDataType | grep 'Chipset Model:'
-
-
-Windows (via cmd.exe):
-
-        wmic path win32_VideoController get name

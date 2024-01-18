@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 
 from nested_admin import NestedModelAdmin  # @UnresolvedImport
 
-from llm_performance.models import PerformanceSnapshot
+from llm_performance.models import PerformanceSnapshot, SampleInput
 
 
 def approve_snapshot(modeladmin, request, queryset):
@@ -106,6 +106,11 @@ class PerformanceSnapshotAdmin(NestedModelAdmin):
             return format_html(t.format(l, 'grp-delete-link', '.9', '&nbsp;rejected&nbsp;'))
     get_approve_reject_links.short_description = 'state'
     get_approve_reject_links.allow_tags = True
-    
+
+
+class SampleInputAdmin(NestedModelAdmin):
+
+    list_display = ('llm_model', )
 
 admin.site.register(PerformanceSnapshot, PerformanceSnapshotAdmin)
+admin.site.register(SampleInput, SampleInputAdmin)
