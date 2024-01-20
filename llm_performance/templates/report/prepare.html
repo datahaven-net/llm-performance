@@ -87,25 +87,30 @@
         </div>
         <div class="card-body">
             <p>
-                Copy one of the text samples bellow - depending on your selected ollama model.
+                Copy one of the text samples bellow.
                 <br>
                 Paste selected text it into the ollama prompt and then hit "Enter" to start... It may take a while to get a response.
             </p>
- 
-        {% for sample in object_list %}
+
+            <div class="row"> 
+	        {% for sample in object_list %}
+                <div class="col-md-2">
+	            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseTextSample{{ sample.id }}" aria-expanded="false" aria-controls="collapseTextSample{{ sample.id }}">
+		            {{ sample.name }}
+		        </button>
+		        </div>	
+			{% endfor %}
+            </div>
 
             <br />
-            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseTextSample{{ sample.id }}" aria-expanded="false" aria-controls="collapseTextSample{{ sample.id }}">
-	            {{ sample.llm_model }}
-	        </button>
-            <br />
-			<div class="collapse" id="collapseTextSample{{ sample.id }}">
+
+        {% for sample in object_list %}
+            <div class="collapse" id="collapseTextSample{{ sample.id }}">
                 <div class="card card-body">
                     <font size="-1"><pre id="clipboardTextSample{{ sample.id }}" class="text-left" style="display: block; width: 100%;">{{ sample.text }}</pre></font>
                 </div>
-			</div>
-
-		{% endfor %}
+            </div>
+        {% endfor %}
 
         </div>
     </div>
@@ -143,7 +148,13 @@ eval rate: 38.31 tokens/s</pre>
                 Now, please select and copy to clipboard <b><u>complete log of your interraction with ollama prompt</u></b>.
                 <br />
                 It must include command-line arguments and the final performance statistics:
-                beginning with <code>ollama run {model name} --verbose ...</code> and ending with <code>... eval rate: XX.XX tokens/s</code>
+                beginning with:
+                <br/>
+                <code>ollama run {model name} --verbose ...</code>
+                <br/>
+                and ending with
+                <br/>
+                <code>... eval rate: XX.XX tokens/s</code>
             </p>
             <p>
                 We require the full report in order to recognise ollama model name you used and returned results.
