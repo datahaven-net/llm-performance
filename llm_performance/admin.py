@@ -116,6 +116,7 @@ class SampleInputAdmin(NestedModelAdmin):
 class FrequentlyAskedQuestionAdmin(NestedModelAdmin):
 
     list_display = ('position', 'question', )
+    list_display_links = ('position', 'question', )
 
 
 admin.site.register(PerformanceSnapshot, PerformanceSnapshotAdmin)
