@@ -11,7 +11,7 @@ import django_tables2
 
 from accounts.users import create_profile
 
-from llm_performance.models import PerformanceSnapshot, SampleInput
+from llm_performance.models import FrequentlyAskedQuestion, PerformanceSnapshot, SampleInput
 from llm_performance.forms import ReportSendForm
 from llm_performance import duration
 
@@ -215,4 +215,13 @@ class ReportPrepareView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['object_list'] = SampleInput.objects.all()
+        return context
+
+
+class FrequentlyAskedQuestionsView(TemplateView):
+    template_name = 'faq/faq.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object_list'] = FrequentlyAskedQuestion.objects.order_by('position').all()
         return context

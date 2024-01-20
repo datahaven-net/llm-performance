@@ -1,8 +1,23 @@
+{% extends 'base/index.html' %}
+
+{% block main_content %}
+
+
 <h1>F.A.Q.</h1>
 
 <ol>
-    <li><b>What is the purpose of llmperformance.ai?</b><br />
-      This is a benchmark site showing how fast different hardware runs different LLMs.
+
+    {% for faq in object_list %}
+
+    <li><b>{{ faq.question }}</b>
+    <br />
+    {{ faq.answer }}
     </li>
+    </br>
+
+    {% endfor %}
 
 </ol>
+
+
+{% endblock %}

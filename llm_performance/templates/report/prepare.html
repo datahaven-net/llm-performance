@@ -104,13 +104,13 @@
 
             <br />
 
-        {% for sample in object_list %}
+            {% for sample in object_list %}
             <div class="collapse" id="collapseTextSample{{ sample.id }}">
                 <div class="card card-body">
                     <font size="-1"><pre id="clipboardTextSample{{ sample.id }}" class="text-left" style="display: block; width: 100%;">{{ sample.text }}</pre></font>
                 </div>
             </div>
-        {% endfor %}
+            {% endfor %}
 
         </div>
     </div>
