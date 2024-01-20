@@ -172,3 +172,26 @@ class SampleInput(models.Model):
         default=None,
         db_index=True,
     )
+
+
+class FrequentlyAskedQuestion(models.Model):
+
+    position = models.IntegerField(
+        db_index=False,
+        null=True,
+        blank=True,
+        default=None,
+    )
+
+    question = models.TextField(
+        db_index=False,
+    )
+
+    answer = models.TextField(
+        db_index=False,
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.position:
+            self.position = FrequentlyAskedQuestion.objects.count() + 1
+        return super(FrequentlyAskedQuestion, self).save(*args, **kwargs)

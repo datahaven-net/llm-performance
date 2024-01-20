@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 
 from nested_admin import NestedModelAdmin  # @UnresolvedImport
 
-from llm_performance.models import PerformanceSnapshot, SampleInput
+from llm_performance.models import FrequentlyAskedQuestion, PerformanceSnapshot, SampleInput
 
 
 def approve_snapshot(modeladmin, request, queryset):
@@ -112,5 +112,12 @@ class SampleInputAdmin(NestedModelAdmin):
 
     list_display = ('name', )
 
+
+class FrequentlyAskedQuestionAdmin(NestedModelAdmin):
+
+    list_display = ('position', 'question', )
+
+
 admin.site.register(PerformanceSnapshot, PerformanceSnapshotAdmin)
 admin.site.register(SampleInput, SampleInputAdmin)
+admin.site.register(FrequentlyAskedQuestion, FrequentlyAskedQuestionAdmin)

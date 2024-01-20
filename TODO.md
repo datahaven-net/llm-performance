@@ -10,7 +10,7 @@
 
 + add optional input fields to ask user the year the system was purchased and approximate price then
 
-- add optional input field to enter number of CPU cores
++ add optional input field to enter number of CPU cores
 
 + display collected performance stats on the main page
 
@@ -20,9 +20,9 @@
 
 + make possible for admin to "trust" certain user and auto-approve all of his performance reports
 
-- make possible for admin to add and modify test inputs and let users copy those inputs to clipboard
++ make possible for admin to add and modify test inputs and let users copy those inputs to clipboard
 
-- make possible for admin to modify FAQ page via Django Admin
++ make possible for admin to modify FAQ page via Django Admin
 
 + record in the DB the date and time a result is submitted by user
 
@@ -39,8 +39,6 @@
 + add standard text that people submit to models on the site and also "copy to clipboard" button for that
 
 + provide instructions to users how to learn CPU and GPU model name on different platforms
-
-- implement checkbox "send me a copy of this report"
 
 - configure fail2ban
 
