@@ -165,7 +165,7 @@ class SampleInput(models.Model):
         db_index=False,
     )
 
-    llm_model = models.CharField(
+    name = models.CharField(
         max_length=128,
         null=True,
         blank=True,

@@ -110,7 +110,7 @@ class PerformanceSnapshotAdmin(NestedModelAdmin):
 
 class SampleInputAdmin(NestedModelAdmin):
 
-    list_display = ('llm_model', )
+    list_display = ('name', )
 
 admin.site.register(PerformanceSnapshot, PerformanceSnapshotAdmin)
 admin.site.register(SampleInput, SampleInputAdmin)
