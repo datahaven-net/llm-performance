@@ -18,7 +18,6 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.conf.urls import include
-from django.views.generic import TemplateView
 from django.urls import path
 
 from accounts import views as accounts_views
@@ -56,6 +55,7 @@ auth_patterns = [
 patterns = [
     path('report/prepare/', llm_performance_views.ReportPrepareView.as_view(), name='report_prepare'),
     path('report/send/', llm_performance_views.ReportSendView.as_view(), name='report_send'),
+    path('report/view/<int:pk>/', llm_performance_views.ReportContentView.as_view(), name='report_view'),
     path('faq/', llm_performance_views.FrequentlyAskedQuestionsView.as_view(), name='faq'),
     path('', llm_performance_views.IndexPageView.as_view(), name='index'),
 ]

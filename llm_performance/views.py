@@ -3,9 +3,12 @@ import logging
 from django import shortcuts
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, Http404
 from django.urls import reverse_lazy
+from django.utils.html import format_html
 from django.utils.decorators import method_decorator
 from django.views.generic import FormView, TemplateView
+from django.views import View
 
 import django_tables2
 
@@ -43,12 +46,13 @@ class PerformanceSnapshotTable(django_tables2.Table):
     eval_rate = django_tables2.Column(verbose_name='eval rate')
     llm_model = django_tables2.Column(verbose_name='model name')
     reporter = django_tables2.Column(verbose_name='reporter')
+    report_id = django_tables2.Column(verbose_name='report')
 
     class Meta:
         model = PerformanceSnapshot
         template_name = "table/bootstrap4-responsive.html"
         sequence = ('cpu', 'cpu_cores', 'gpu', 'ram', 'vram', 'operating_system',
-                    'prompt_eval_rate', 'eval_rate', 'llm_model', 'reporter', )
+                    'prompt_eval_rate', 'eval_rate', 'llm_model', 'reporter', 'report_id', )
         exclude = ('timestamp', 'input', 'cpu_brand', 'gpu_brand', 'purchase_year', 'purchase_price',
                    'total_duration', 'load_duration',
                    'prompt_eval_count', 'prompt_eval_duration', 'eval_count', 'eval_duration',
@@ -62,6 +66,12 @@ class PerformanceSnapshotTable(django_tables2.Table):
 
     def render_reporter(self, record):
         return record.reporter_formatted
+
+    def render_report_id(self, record):
+        return format_html(
+            '<i class="fa fa-eye badge badge-primary badge-sm btn btn-primary" aria-hidden="true" data-toggle="modal" data-target="#modal_view_report" data-reportid="{}"> </i>',
+            record.report_id,
+        )
 
 
 class IndexPageView(django_tables2.SingleTableView):
@@ -216,6 +226,20 @@ class ReportPrepareView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['object_list'] = SampleInput.objects.all()
         return context
+
+
+class ReportContentView(View):
+
+    @validate_profile_exists
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        try:
+            report = PerformanceSnapshot.objects.get(pk=kwargs['pk'])
+        except PerformanceSnapshot.DoesNotExist:
+            raise Http404("report does not exist")
+        return HttpResponse(report.input)
 
 
 class FrequentlyAskedQuestionsView(TemplateView):
