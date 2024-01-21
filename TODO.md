@@ -24,6 +24,8 @@
 
 + make possible for admin to modify FAQ page via Django Admin
 
++ make possible for any user to view any report
+
 + record in the DB the date and time a result is submitted by user
 
 + add optional input field to provide operating system info

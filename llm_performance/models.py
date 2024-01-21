@@ -158,6 +158,10 @@ class PerformanceSnapshot(models.Model):
     def reporter_formatted(self):
         return self.reporter.profile.person_name
 
+    @property
+    def report_id(self):
+        return self.id
+
 
 class SampleInput(models.Model):
 
