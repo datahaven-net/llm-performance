@@ -3,7 +3,9 @@ import logging
 import time
 import traceback
 
-from logs.models import RequestLog
+from django.http import HttpResponseForbidden
+
+from logs.models import RequestLog, VisitorIP
 
 
 logger = logging.getLogger(__name__)
@@ -16,15 +18,31 @@ class LogRequestsMiddleware(object):
 
     def __call__(self, request):
         request._start_time = time.monotonic_ns()
+        ip_addr = self.client_ip(request)
+
+        visitor_ip = None
+        try:        
+            visitor_ip, this_is_fresh_ip = VisitorIP.objects.get_or_create(ip_address=ip_addr)
+        except:
+            logger.exception("Failed to create VisitorIP record")
+
+        if visitor_ip:
+            if visitor_ip.blocked:
+                return HttpResponseForbidden()
+            visitor_ip.counter += 1
+            visitor_ip.save()
+
         request_body = self.request_body(request)
         response = self.get_response(request)
+
         if response.streaming:
             return response
         if not self.log_filter(request):
             return response
+
         try:
             RequestLog.objects.create(
-                ip_address=self.client_ip(request),
+                ip_address=ip_addr,
                 user=self.user_email(request),
                 method=request.method,
                 path=request.path,
@@ -34,7 +52,7 @@ class LogRequestsMiddleware(object):
                 duration=(time.monotonic_ns() - request._start_time) / 1000000000.0,
             )
         except:
-            logger.exception("Failed to create APILog record")
+            logger.exception("Failed to create RequestLog record")
         return response
 
     def process_exception(self, request, exception):
