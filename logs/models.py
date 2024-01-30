@@ -18,3 +18,10 @@ class RequestLog(models.Model):
         return RequestLog.objects.filter(
             pk__in=RequestLog.objects.order_by('-timestamp').all().values_list('pk')[num_records:],
         ).delete()
+
+
+class VisitorIP(models.Model):
+    ip_address = models.GenericIPAddressField(help_text="IP address", db_index=True)
+    first_seen = models.DateTimeField(help_text="First time seen", auto_now_add=True, db_index=True)
+    counter = models.IntegerField(help_text="Requests counter", default=1, db_index=True)
+    blocked = models.BooleanField(help_text="Requests are blocked", default=False)
