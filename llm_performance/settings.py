@@ -53,10 +53,6 @@ METRICS_ENABLED = False
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = getattr(params, 'SECRET_KEY', 'must be declared in params.py directly         !!!')
 
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
 ALLOWED_HOSTS = ['*', ]
 
 # Application definition
