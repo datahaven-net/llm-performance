@@ -104,7 +104,7 @@ eval rate:            1.69 tokens/s''',
         }),
         max_length=1024*50,
         regex=re.compile(
-            pattern='^.*?ollama\s+run\s+.*?(?P<llm_model>[\w\:\-\_\.]+)\s+.*?'
+            pattern='^.*?ollama\s+run\s+?(?P<llm_model>[\w\:\-\_\.\ ]+).*?'
                     'total duration\:\s+?(?P<total_duration>[\d\.ywduhmnsµμ]+)\s+'
                     'load duration\:\s+?(?P<load_duration>[\d\.ywduhmnsµμ]+)\s+'
                     'prompt eval count\:\s+?(?P<prompt_eval_count>\d+).+\s+'
