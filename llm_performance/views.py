@@ -131,6 +131,7 @@ class ReportSendView(FormView):
                 return super(ReportSendView, self).form_invalid(form)
 
             m = form.fields['message']._get_regex().match(form.data['message'])
+            llm_model_name = m.group('llm_model').replace('--verbose', '').strip()
             d = form.cleaned_data
 
             known_cpu_brand = None
@@ -198,7 +199,7 @@ class ReportSendView(FormView):
                 eval_count=m.group('eval_count'),
                 eval_duration=duration.from_str(m.group('eval_duration')),
                 eval_rate=m.group('eval_rate'),
-                llm_model=m.group('llm_model'),
+                llm_model=llm_model_name,
                 approved=self.request.user.trusted,
                 reporter=self.request.user,
             )

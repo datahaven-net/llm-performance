@@ -105,9 +105,6 @@ class LogRequestsMiddleware(object):
         return None
 
     def log_filter(self, request):
-        if self.client_ip(request) == '1.2.3.4':
-            # skip logging all monitoring requests from specific host
-            return False
         p = request.path
         if any([p.startswith(ignore_path) for ignore_path in LOG_IGNORE_PATH_STARTSWITH]):
             # skip logging of some specific requests

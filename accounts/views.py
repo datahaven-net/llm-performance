@@ -131,7 +131,7 @@ class ActivateView(RedirectView):
         user.save()
         messages.success(self.request, 'You have successfully activated your account')
         login(self.request, user)
-        # If user do not have a profile yet need to create it for him.
+        # If user do not have a profile yet - need to create it
         try:
             user.profile
         except ObjectDoesNotExist:
